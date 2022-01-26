@@ -8,7 +8,7 @@ public class Vision extends SubsystemBase{
     double disX = 0, disY = 0, tx = 0, ty = 0, ta = 0, tv = 0;
     boolean targetFound = false;
 
-    double deadPocket = 0.1;
+    double deadPocket = 0.2;
 
     public double update(){  
         
