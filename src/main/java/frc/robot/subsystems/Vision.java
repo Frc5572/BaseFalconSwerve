@@ -9,7 +9,7 @@ public class Vision extends SubsystemBase{
     boolean targetFound = false;
     double roundOff;
 
-    double deadPocket = 0.1;
+    double deadPocket = 0.2;
 
     public double update(){  
         
