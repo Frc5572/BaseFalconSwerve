@@ -7,6 +7,7 @@ public class Vision extends SubsystemBase{
 
     double disX = 0, disY = 0, tx = 0, ty = 0, ta = 0, tv = 0;
     boolean targetFound = false;
+    double roundOff;
 
     double deadPocket = 0.2;
 
@@ -28,7 +29,7 @@ public class Vision extends SubsystemBase{
                 disY = ty;
             }
         double calculated =  -(disX / 125) * 10;
-        double roundOff = Math.round(calculated * 100.0) / 100.0;
+        roundOff = Math.round(calculated * 100.0) / 100.0;
         roundOff = (Math.abs(roundOff) <= deadPocket) ? 0 : roundOff;
         return roundOff;
     }
@@ -39,5 +40,9 @@ public class Vision extends SubsystemBase{
 
     public boolean getTargetFound(){
         return targetFound;
+    }
+
+    public boolean getTargetAligned(){
+        return roundOff == 0;
     }
 }
