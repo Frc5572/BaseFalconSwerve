@@ -7,15 +7,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.autos.*;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
-import frc.robot.other.*;
+import frc.robot.autos.exampleAuto;
+import frc.robot.autos.limelightAuto;
+import frc.robot.autos.ultrasonicAuto;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.moveNewMotor;
+import frc.robot.other.Ultrasonic;
+import frc.robot.subsystems.NewMotor;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,10 +46,12 @@ public class RobotContainer {
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
   /* Driver Buttons */
-  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton moveMotorNew = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton zeroGyro =
+    new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton moveMotorNew =
+    new JoystickButton(driver, XboxController.Button.kA.value);
 
-  
+
 
   boolean fieldRelative;
   boolean openLoop;
@@ -60,7 +67,8 @@ public class RobotContainer {
   public RobotContainer() {
     this.fieldRelative = Constants.Swerve.isFieldRelative;
     this.openLoop = Constants.Swerve.isOpenLoop;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver, translationAxis,
+      strafeAxis, rotationAxis, fieldRelative, openLoop));
     autoChooser.setDefaultOption("Example Auto", exampleAuto);
     autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
     autoChooser.addOption("Limelight Auto", limelightAuto);
@@ -71,9 +79,9 @@ public class RobotContainer {
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
@@ -89,17 +97,17 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
 
-    if(autoChooser.getSelected() == "Example Auto"){
+    if (autoChooser.getSelected() == "Example Auto") {
       System.out.println("Example Auto!!!!!!!!!!!!!!");
       autoCommand = new exampleAuto(s_Swerve);
-    } else if (autoChooser.getSelected() == "Ultrasonic Auto"){
+    } else if (autoChooser.getSelected() == "Ultrasonic Auto") {
       System.out.println("Ultrasonic Auto!!!!!!!!!!!!!!");
       autoCommand = new ultrasonicAuto(s_Swerve, ultrasonic);
-    } else if (autoChooser.getSelected() == "Limelight Auto"){
+    } else if (autoChooser.getSelected() == "Limelight Auto") {
       System.out.println("Limelight Auto!!!!!!!!!!!!!!");
       autoCommand = new limelightAuto(s_Swerve, vision);
     }
     return autoCommand;
-    
+
   }
 }
