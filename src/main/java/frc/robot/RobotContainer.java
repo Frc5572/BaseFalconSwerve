@@ -34,6 +34,8 @@ public class RobotContainer {
   private static final String exampleAuto = "Example Auto";
   private static final String ultrasonicAuto = "Ultrasonic Auto";
   private static final String limelightAuto = "Limelight Auto";
+  private static final String resnickAuto = "Resnick Auto";
+
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -64,6 +66,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Example Auto", exampleAuto);
     autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
     autoChooser.addOption("Limelight Auto", limelightAuto);
+    autoChooser.addOption("Resnick Auto", resnickAuto);
     SmartDashboard.putData("Choose Auto: ", autoChooser);
     // Configure the button bindings
     configureButtonBindings();
@@ -98,6 +101,8 @@ public class RobotContainer {
     } else if (autoChooser.getSelected() == "Limelight Auto"){
       System.out.println("Limelight Auto!!!!!!!!!!!!!!");
       autoCommand = new limelightAuto(s_Swerve, vision);
+    } else if (autoChooser.getSelected() == "Resnick Auto"){
+      autoCommand = new ResnickAuto(s_Swerve);
     }
     return autoCommand;
     
