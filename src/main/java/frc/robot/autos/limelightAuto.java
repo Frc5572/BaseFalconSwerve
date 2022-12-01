@@ -20,12 +20,21 @@ import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
-public class limelightAuto extends SequentialCommandGroup {
+/**
+ * Autonomous that involves the Limelight
+ */
+public class LimelightAuto extends SequentialCommandGroup {
     Vision vision;
     NewMotor s_NewMotor;
     Swerve s_Swerve;
 
-    public limelightAuto(Swerve s_Swerve, Vision vision) {
+    /**
+     * Limelight auto method
+     *
+     * @param s_Swerve swerve drive
+     * @param vision Limelight
+     */
+    public LimelightAuto(Swerve s_Swerve, Vision vision) {
         this.s_Swerve = s_Swerve;
         System.out.println("Limelight Auto !!");
         TrajectoryConfig config =

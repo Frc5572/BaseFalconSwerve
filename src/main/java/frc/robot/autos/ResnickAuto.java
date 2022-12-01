@@ -8,7 +8,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Swerve;
 
+/**
+ * Autonomous for Resnick's apartment
+ */
 public class ResnickAuto extends frc.robot.commands.AutoBase {
+    /**
+     * ResnickAuto method
+     *
+     * @param swerve Swerve drive
+     */
     public ResnickAuto(Swerve swerve) {
         super(swerve);
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", 1, .5);

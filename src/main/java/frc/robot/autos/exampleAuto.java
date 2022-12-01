@@ -15,8 +15,16 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-public class exampleAuto extends SequentialCommandGroup {
-    public exampleAuto(Swerve s_Swerve) {
+/**
+ * Example autonomous for swerve drive
+ */
+public class ExampleAuto extends SequentialCommandGroup {
+    /**
+     * ExampleAuto method
+     *
+     * @param s_Swerve swerve drive
+     */
+    public ExampleAuto(Swerve s_Swerve) {
         System.out.println("Example Auto !!");
         TrajectoryConfig config =
             new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,

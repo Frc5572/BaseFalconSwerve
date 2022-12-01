@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autos.ExampleAuto;
+import frc.robot.autos.LimelightAuto;
 import frc.robot.autos.ResnickAuto;
-import frc.robot.autos.exampleAuto;
-import frc.robot.autos.limelightAuto;
-import frc.robot.autos.ultrasonicAuto;
+import frc.robot.autos.UltrasonicAuto;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.moveNewMotor;
 import frc.robot.other.Ultrasonic;
@@ -103,13 +103,13 @@ public class RobotContainer {
 
         if (autoChooser.getSelected() == "Example Auto") {
             System.out.println("Example Auto!!!!!!!!!!!!!!");
-            autoCommand = new exampleAuto(s_Swerve);
+            autoCommand = new ExampleAuto(s_Swerve);
         } else if (autoChooser.getSelected() == "Ultrasonic Auto") {
             System.out.println("Ultrasonic Auto!!!!!!!!!!!!!!");
-            autoCommand = new ultrasonicAuto(s_Swerve, ultrasonic);
+            autoCommand = new UltrasonicAuto(s_Swerve, ultrasonic);
         } else if (autoChooser.getSelected() == "Limelight Auto") {
             System.out.println("Limelight Auto!!!!!!!!!!!!!!");
-            autoCommand = new limelightAuto(s_Swerve, vision);
+            autoCommand = new LimelightAuto(s_Swerve, vision);
         } else if (autoChooser.getSelected() == "Resnick Auto") {
             autoCommand = new ResnickAuto(s_Swerve);
         }

@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // michael frere was here
 
+/**
+ * Subsystem that has a random motor spin
+ */
 public class Spin extends SubsystemBase {
 
     Timer m_Timer = new Timer();
@@ -28,6 +31,11 @@ public class Spin extends SubsystemBase {
         randomMotor.set(ControlMode.PercentOutput, 0);
     }
 
+    /**
+     * checks if the action running is finished
+     *
+     * @return boolean value, true if finished, false if not
+     */
     public boolean isFinished() {
         if (m_Timer.get() > 3) {
             return true;

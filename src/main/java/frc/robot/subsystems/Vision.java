@@ -4,14 +4,27 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Vision class for the limelight (or vision processing system)
+ */
 public class Vision extends SubsystemBase {
 
-    double disX = 0, disY = 0, tx = 0, ty = 0, ta = 0, tv = 0;
+    double disX = 0;
+    double disY = 0;
+    double tx = 0;
+    double ty = 0;
+    double ta = 0;
+    double tv = 0;
     boolean targetFound = false;
     double roundOff;
 
     double deadPocket = 0.1;
 
+    /**
+     * Update the NetworkTables with information from the Limelight
+     *
+     * @return distance rounded to the hundredths places
+     */
     public double update() {
 
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");

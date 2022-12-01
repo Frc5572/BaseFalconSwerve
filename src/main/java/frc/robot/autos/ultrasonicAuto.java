@@ -20,11 +20,20 @@ import frc.robot.other.Ultrasonic;
 import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
 
-public class ultrasonicAuto extends SequentialCommandGroup {
+/**
+ * Autonomous that involves the Ultrasonic sensor
+ */
+public class UltrasonicAuto extends SequentialCommandGroup {
     Ultrasonic ultrasonic;
     NewMotor s_NewMotor;
 
-    public ultrasonicAuto(Swerve s_Swerve, Ultrasonic ultrasonic) {
+    /**
+     * Ultrasonic Auto method
+     *
+     * @param s_Swerve swerve drive
+     * @param ultrasonic ultrasonic sensor
+     */
+    public UltrasonicAuto(Swerve s_Swerve, Ultrasonic ultrasonic) {
         s_NewMotor = new NewMotor();
         System.out.println("Ultrasonic Auto !!");
         TrajectoryConfig config =
