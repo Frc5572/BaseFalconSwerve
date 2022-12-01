@@ -9,7 +9,7 @@ import frc.robot.subsystems.Vision;
 /**
  * Align the robot based on the reflective tape using the limelight
  */
-public class limelightAlign extends CommandBase {
+public class LimelightAlign extends CommandBase {
     Swerve s_Swerve;
     Vision vision;
     Translation2d translation;
@@ -20,7 +20,7 @@ public class limelightAlign extends CommandBase {
      * @param s_Swerve swerve drive
      * @param vision limelight (or imaging processing module)
      */
-    public limelightAlign(Swerve s_Swerve, Vision vision) {
+    public LimelightAlign(Swerve s_Swerve, Vision vision) {
         this.s_Swerve = s_Swerve;
         this.vision = vision;
         this.translation = new Translation2d(0, 0);

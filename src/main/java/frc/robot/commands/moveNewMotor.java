@@ -6,7 +6,7 @@ import frc.robot.subsystems.NewMotor;
 /**
  * Moves the new motor on the test bot
  */
-public class moveNewMotor extends CommandBase {
+public class MoveNewMotor extends CommandBase {
     NewMotor s_NewMotor;
 
     /**
@@ -14,7 +14,7 @@ public class moveNewMotor extends CommandBase {
      *
      * @param subsystem motor ID
      */
-    public moveNewMotor(NewMotor subsystem) {
+    public MoveNewMotor(NewMotor subsystem) {
         this.s_NewMotor = subsystem;
     }
 

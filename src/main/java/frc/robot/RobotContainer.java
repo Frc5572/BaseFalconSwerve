@@ -16,8 +16,8 @@ import frc.robot.autos.ExampleAuto;
 import frc.robot.autos.LimelightAuto;
 import frc.robot.autos.ResnickAuto;
 import frc.robot.autos.UltrasonicAuto;
+import frc.robot.commands.MoveNewMotor;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.moveNewMotor;
 import frc.robot.other.Ultrasonic;
 import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
@@ -90,7 +90,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        moveMotorNew.whileHeld(new moveNewMotor(new NewMotor()));
+        moveMotorNew.whileHeld(new MoveNewMotor(new NewMotor()));
     }
 
     /**

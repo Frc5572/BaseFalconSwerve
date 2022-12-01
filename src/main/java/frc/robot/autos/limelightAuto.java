@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.ZeroMotorsWaitCommand;
-import frc.robot.commands.limelightAlign;
 import frc.robot.commands.moveNewMotor;
 import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
@@ -69,8 +69,8 @@ public class LimelightAuto extends SequentialCommandGroup {
         ZeroMotorsWaitCommand firstWait = new ZeroMotorsWaitCommand(3);
         ZeroMotorsWaitCommand secondWait = new ZeroMotorsWaitCommand(.5);
         ParallelRaceGroup secondTrajectNewMotor =
-            new ParallelRaceGroup(new moveNewMotor(new NewMotor()), secondHalfTraject);
-        limelightAlign align = new limelightAlign(s_Swerve, vision);
+            new ParallelRaceGroup(new MoveNewMotor(new NewMotor()), secondHalfTraject);
+        LimelightAlign align = new LimelightAlign(s_Swerve, vision);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(firstHalfTrajectory.getInitialPose())),
