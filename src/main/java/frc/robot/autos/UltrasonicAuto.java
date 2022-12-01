@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.commands.MoveNewMotor;
 import frc.robot.commands.ZeroMotorsWaitCommand;
-import frc.robot.commands.moveNewMotor;
 import frc.robot.other.Ultrasonic;
 import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
@@ -70,7 +70,7 @@ public class UltrasonicAuto extends SequentialCommandGroup {
         ZeroMotorsWaitCommand firstWait = new ZeroMotorsWaitCommand(3);
         ZeroMotorsWaitCommand secondWait = new ZeroMotorsWaitCommand(.5);
         ParallelRaceGroup secondTrajectNewMotor =
-            new ParallelRaceGroup(new moveNewMotor(new NewMotor()), secondHalfTraject);
+            new ParallelRaceGroup(new MoveNewMotor(new NewMotor()), secondHalfTraject);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(firstHalfTrajectory.getInitialPose())),
