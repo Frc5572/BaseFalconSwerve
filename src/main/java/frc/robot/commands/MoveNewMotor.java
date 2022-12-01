@@ -1,10 +1,20 @@
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.NewMotor;
 
-public class moveNewMotor extends CommandBase{
+/**
+ * Moves the new motor on the test bot
+ */
+public class MoveNewMotor extends CommandBase {
     NewMotor s_NewMotor;
-    public moveNewMotor(NewMotor subsystem){
+
+    /**
+     * Initializes new motor
+     *
+     * @param subsystem motor ID
+     */
+    public MoveNewMotor(NewMotor subsystem) {
         this.s_NewMotor = subsystem;
     }
 
@@ -18,7 +28,7 @@ public class moveNewMotor extends CommandBase{
         s_NewMotor.move();
     }
 
-    
+
     @Override
     public void end(boolean interrupted) {
         s_NewMotor.stop();

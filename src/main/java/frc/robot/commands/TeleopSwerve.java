@@ -1,20 +1,23 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
+/**
+ * Creates an command for driving the swerve drive during tele-op
+ */
 public class TeleopSwerve extends CommandBase {
 
     private double rotation;
     private Translation2d translation;
     private boolean fieldRelative;
     private boolean openLoop;
-    
+
     private Swerve s_Swerve;
     private Joystick controller;
     private int translationAxis;
@@ -25,7 +28,8 @@ public class TeleopSwerve extends CommandBase {
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Vision vision, Joystick controller, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+    public TeleopSwerve(Swerve s_Swerve, Vision vision, Joystick controller, int translationAxis,
+        int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         this.vision = new Vision();
@@ -44,24 +48,27 @@ public class TeleopSwerve extends CommandBase {
         double yAxis = -controller.getRawAxis(translationAxis);
         double xAxis = -controller.getRawAxis(strafeAxis);
         double rAxis = -controller.getRawAxis(rotationAxis);
-        
+
         /* Deadbands */
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
-        // if(controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound()){   
-        //     rotation = vision.getAimValue();
+        // if(controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound()){
+        // rotation = vision.getAimValue();
         // } else {
-        //     rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        // rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         // }
 
-        rotation = (controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound()) ? vision.getAimValue() : rAxis * Constants.Swerve.maxAngularVelocity;
+        rotation =
+            (controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound())
+                ? vision.getAimValue()
+                : rAxis * Constants.Swerve.maxAngularVelocity;
 
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
-        
+
     }
 
 }

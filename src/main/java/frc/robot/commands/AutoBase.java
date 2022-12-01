@@ -18,9 +18,9 @@ public class AutoBase extends SequentialCommandGroup {
     public static final ProfiledPIDController profiledThetaController =
         new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
             Constants.AutoConstants.kThetaControllerConstraints);
-    
+
     public static final PIDController thetaController =
-            new PIDController(Constants.AutoConstants.kPThetaController, 0, 0);
+        new PIDController(Constants.AutoConstants.kPThetaController, 0, 0);
 
     /**
      * Autonomous that aligns limelight then executes a trajectory.
