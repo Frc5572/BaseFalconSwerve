@@ -20,7 +20,7 @@ public class SpinMotor extends CommandBase {
 
 
     /**
-     * Initalize which motor ID to spin
+     * Initialize which motor ID to spin
      *
      * @param subsystem motor to spin
      */

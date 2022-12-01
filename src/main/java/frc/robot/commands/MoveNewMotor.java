@@ -10,7 +10,7 @@ public class MoveNewMotor extends CommandBase {
     NewMotor s_NewMotor;
 
     /**
-     * Initalizes new motor
+     * Initializes new motor
      *
      * @param subsystem motor ID
      */
