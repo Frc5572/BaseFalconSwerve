@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autos.ResnickAuto;
 import frc.robot.autos.exampleAuto;
 import frc.robot.autos.limelightAuto;
 import frc.robot.autos.ultrasonicAuto;
@@ -29,85 +30,90 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  /* Controllers */
-  private final Joystick driver = new Joystick(0);
+    /* Controllers */
+    private final Joystick driver = new Joystick(0);
 
-  private final SendableChooser<String> autoChooser = new SendableChooser<>();
+    private final SendableChooser<String> autoChooser = new SendableChooser<>();
 
-  private Command autoCommand;
+    private Command autoCommand;
 
-  private static final String exampleAuto = "Example Auto";
-  private static final String ultrasonicAuto = "Ultrasonic Auto";
-  private static final String limelightAuto = "Limelight Auto";
-
-  /* Drive Controls */
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-  /* Driver Buttons */
-  private final JoystickButton zeroGyro =
-    new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton moveMotorNew =
-    new JoystickButton(driver, XboxController.Button.kA.value);
+    private static final String exampleAuto = "Example Auto";
+    private static final String ultrasonicAuto = "Ultrasonic Auto";
+    private static final String limelightAuto = "Limelight Auto";
+    private static final String resnickAuto = "Resnick Auto";
 
 
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  boolean fieldRelative;
-  boolean openLoop;
-
-
-  /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
-  private Vision vision = new Vision();
-
-  private Ultrasonic ultrasonic = new Ultrasonic();
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    this.fieldRelative = Constants.Swerve.isFieldRelative;
-    this.openLoop = Constants.Swerve.isOpenLoop;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver, translationAxis,
-      strafeAxis, rotationAxis, fieldRelative, openLoop));
-    autoChooser.setDefaultOption("Example Auto", exampleAuto);
-    autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
-    autoChooser.addOption("Limelight Auto", limelightAuto);
-    SmartDashboard.putData("Choose Auto: ", autoChooser);
-    // Configure the button bindings
-    configureButtonBindings();
-  }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
     /* Driver Buttons */
-    zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    moveMotorNew.whileHeld(new moveNewMotor(new NewMotor()));
-  }
+    private final JoystickButton zeroGyro =
+        new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton moveMotorNew =
+        new JoystickButton(driver, XboxController.Button.kA.value);
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
 
-  public Command getAutonomousCommand() {
 
-    if (autoChooser.getSelected() == "Example Auto") {
-      System.out.println("Example Auto!!!!!!!!!!!!!!");
-      autoCommand = new exampleAuto(s_Swerve);
-    } else if (autoChooser.getSelected() == "Ultrasonic Auto") {
-      System.out.println("Ultrasonic Auto!!!!!!!!!!!!!!");
-      autoCommand = new ultrasonicAuto(s_Swerve, ultrasonic);
-    } else if (autoChooser.getSelected() == "Limelight Auto") {
-      System.out.println("Limelight Auto!!!!!!!!!!!!!!");
-      autoCommand = new limelightAuto(s_Swerve, vision);
+    boolean fieldRelative;
+    boolean openLoop;
+
+
+    /* Subsystems */
+    private final Swerve s_Swerve = new Swerve();
+    private Vision vision = new Vision();
+
+    private Ultrasonic ultrasonic = new Ultrasonic();
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        this.fieldRelative = Constants.Swerve.isFieldRelative;
+        this.openLoop = Constants.Swerve.isOpenLoop;
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver, translationAxis,
+            strafeAxis, rotationAxis, fieldRelative, openLoop));
+        autoChooser.setDefaultOption("Example Auto", exampleAuto);
+        autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
+        autoChooser.addOption("Limelight Auto", limelightAuto);
+        autoChooser.addOption("Resnick Auto", resnickAuto);
+        SmartDashboard.putData("Choose Auto: ", autoChooser);
+        // Configure the button bindings
+        configureButtonBindings();
     }
-    return autoCommand;
 
-  }
+    /**
+     * Use this method to define your button->command mappings. Buttons can be created by
+     * instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        /* Driver Buttons */
+        zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        moveMotorNew.whileHeld(new moveNewMotor(new NewMotor()));
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+
+    public Command getAutonomousCommand() {
+
+        if (autoChooser.getSelected() == "Example Auto") {
+            System.out.println("Example Auto!!!!!!!!!!!!!!");
+            autoCommand = new exampleAuto(s_Swerve);
+        } else if (autoChooser.getSelected() == "Ultrasonic Auto") {
+            System.out.println("Ultrasonic Auto!!!!!!!!!!!!!!");
+            autoCommand = new ultrasonicAuto(s_Swerve, ultrasonic);
+        } else if (autoChooser.getSelected() == "Limelight Auto") {
+            System.out.println("Limelight Auto!!!!!!!!!!!!!!");
+            autoCommand = new limelightAuto(s_Swerve, vision);
+        } else if (autoChooser.getSelected() == "Resnick Auto") {
+            autoCommand = new ResnickAuto(s_Swerve);
+        }
+        return autoCommand;
+
+    }
 }

@@ -11,7 +11,7 @@ public class SwerveModuleConstants {
 
     /**
      * Swerve Module Constants to be used when creating swerve modules.
-     * 
+     *
      * @param driveMotorID ID of the drive motor
      * @param angleMotorID ID of the angle motor
      * @param canCoderID ID of the canCoder
