@@ -7,6 +7,11 @@ public class Ultrasonic extends SubsystemBase {
 
     private AnalogInput ultrasonicCal = new AnalogInput(0);
 
+    /**
+     * Gets the distance from the target
+     * 
+     * @return distance in centimeters
+     */
     public double getDistanceValue() {
         double currentDistanceCentimeters = ultrasonicCal.getAverageValue() * 0.125;
         if (currentDistanceCentimeters < 30) {
