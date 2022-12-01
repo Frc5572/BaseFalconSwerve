@@ -8,6 +8,9 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
+/**
+ * Creates an command for driving the swerve drive during tele-op
+ */
 public class TeleopSwerve extends CommandBase {
 
     private double rotation;

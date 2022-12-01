@@ -15,11 +15,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
+/**
+ * Creates swerve drive and commands for drive.
+ */
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
 
+    /**
+     * Initializes swerve modules.
+     */
     public Swerve() {
         gyro = new AHRS(Constants.Swerve.navXID);
         // gyro.configFactoryDefault();
@@ -33,6 +39,14 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Constants.Swerve.Mod3.constants)};
     }
 
+    /**
+     * Moves the swerve drive train
+     *
+     * @param translation The 2d translation in the X-Y plane
+     * @param rotation The amount of rotation in the Z axis
+     * @param fieldRelative Whether the movement is relative to the field or absolute
+     * @param isOpenLoop Open or closed loop system
+     */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
@@ -47,6 +61,12 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Sets motors to 0 or inactive.
+     *
+     * @param isOpenLoop Open or closed loop system
+     * @param fieldRelative Whether the movement is relative to the field or absolute
+     */
     public void setMotorsZero(boolean isOpenLoop, boolean fieldRelative) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
@@ -59,7 +79,11 @@ public class Swerve extends SubsystemBase {
         System.out.println("Setting Zero!!!!!!");
     }
 
-    /* Used by SwerveControllerCommand in Auto */
+    /**
+     * Used by SwerveControllerCommand in Auto
+     *
+     * @param desiredStates The desired states of the swerve modules
+     */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
 
@@ -68,14 +92,29 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Returns the position of the robot on the field.
+     *
+     * @return The pose of the robot (x and y are in meters).
+     */
     public Pose2d getPose() {
         return swerveOdometry.getPoseMeters();
     }
 
+    /**
+     * Resets the robot's position on the field.
+     *
+     * @param pose The position on the field that your robot is at.
+     */
     public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(pose, getYaw());
     }
 
+    /**
+     * Gets the states of each swerve module.
+     *
+     * @return Swerve module state
+     */
     public SwerveModuleState[] getStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (SwerveModule mod : mSwerveMods) {
@@ -84,10 +123,16 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    /**
+     * Resets the gryo to 0 offset
+     */
     public void zeroGyro() {
         gyro.zeroYaw();
     }
 
+    /**
+     * Gets the rotation degree from swerve modules.
+     */
     public Rotation2d getYaw() {
         float yaw = gyro.getYaw();
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - yaw)

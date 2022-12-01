@@ -7,12 +7,20 @@ import frc.robot.Constants;
 import frc.robot.subsystems.NewMotor;
 import frc.robot.subsystems.Swerve;
 
+/**
+ * Zeros motors then executes normal wait command.
+ */
 public class ZeroMotorsWaitCommand extends CommandBase {
     protected Timer m_timer = new Timer();
     private final double m_duration;
     private Swerve s_Swerve;
     private NewMotor s_NewMotor;
 
+    /**
+     * Zeros motors then executes normal wait command.
+     *
+     * @param seconds how long the wait command should run
+     */
     public ZeroMotorsWaitCommand(double seconds) {
         this.m_duration = seconds;
         SendableRegistry.setName(this, getName() + ": " + seconds + " seconds");

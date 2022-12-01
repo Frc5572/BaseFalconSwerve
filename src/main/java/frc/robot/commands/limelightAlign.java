@@ -6,11 +6,20 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
+/**
+ * Align the robot based on the reflective tape using the limelight
+ */
 public class limelightAlign extends CommandBase {
     Swerve s_Swerve;
     Vision vision;
     Translation2d translation;
 
+    /**
+     * Initializes the drivetrain and processing module
+     *
+     * @param s_Swerve swerve drive
+     * @param vision limelight (or imaging processing module)
+     */
     public limelightAlign(Swerve s_Swerve, Vision vision) {
         this.s_Swerve = s_Swerve;
         this.vision = vision;

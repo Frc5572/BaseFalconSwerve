@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.other.Ultrasonic;
 import frc.robot.subsystems.Swerve;
 
+/**
+ * Creates the command to retrieve values from the Ultrasonic sensor
+ */
 public class ExecUltrasonic extends CommandBase {
     Swerve s_Swerve = new Swerve();
     Ultrasonic s_Ultrasonic = new Ultrasonic();

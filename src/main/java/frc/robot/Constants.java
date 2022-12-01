@@ -7,9 +7,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.SwerveModuleConstants;
 
+/**
+ * Constants file.
+ */
+
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    /**
+     * Swerve ID's
+     */
     public static final class Swerve {
         public static final edu.wpi.first.wpilibj.SPI.Port navXID =
             edu.wpi.first.wpilibj.SPI.Port.kMXP;
@@ -60,8 +67,8 @@ public final class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.667 / 12); // divide by 12 to convert from volts to
-                                                           // percent output for CTRE
+        public static final double driveKS = (0.667 / 12);
+        // divide by 12 to convert from volts to percent output for CTRE
         public static final double driveKV = (2.44 / 12);
         public static final double driveKA = (0.27 / 12);
 
@@ -81,7 +88,9 @@ public final class Constants {
         public static final boolean canCoderInvert = false;
 
         /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
+        /**
+         * Front Left Module - Module 0.
+         */
         public static final class Mod0 {
             public static final int driveMotorID = 50;
             public static final int angleMotorID = 8;
@@ -91,7 +100,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Front Right Module - Module 1 */
+        /**
+         * Front Right Module - Module 1.
+         */
         public static final class Mod1 {
             public static final int driveMotorID = 51;
             public static final int angleMotorID = 52;
@@ -101,7 +112,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Left Module - Module 2 */
+        /**
+         * Back Left Module - Module 2.
+         */
         public static final class Mod2 {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 2;
@@ -111,7 +124,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Right Module - Module 3 */
+        /**
+         * Back Right Module - Module 3.
+         */
         public static final class Mod3 {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 53;
@@ -123,6 +138,9 @@ public final class Constants {
 
     }
 
+    /**
+     * Autonomous constants for swerve bot.
+     */
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 1;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1;
