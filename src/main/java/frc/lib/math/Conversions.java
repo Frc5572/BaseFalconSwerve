@@ -1,5 +1,8 @@
 package frc.lib.math;
 
+/**
+ * Necessary conversions for our robot
+ */
 public class Conversions {
 
     /**
