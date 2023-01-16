@@ -155,6 +155,11 @@ public class SwerveModule {
         return new SwerveModuleState(velocity, angle);
     }
 
+    /**
+     * Gets the Swerve module position
+     *
+     * @return Swerve module position
+     */
     public SwerveModulePosition getPosition() {
         double position = Conversions.falconToMPS(mDriveMotor.getSelectedSensorPosition(),
             Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);

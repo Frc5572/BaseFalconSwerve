@@ -156,6 +156,11 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the Swerve module position
+     *
+     * @return Swerve module position
+     */
     public SwerveModulePosition[] getPositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (SwerveModule mod : mSwerveMods) {
