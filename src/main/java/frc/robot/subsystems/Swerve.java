@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +32,8 @@ public class Swerve extends SubsystemBase {
         // gyro.configFactoryDefault();
         zeroGyro();
 
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw());
+        swerveOdometry =
+            new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
 
         mSwerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -92,6 +94,7 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+
     /**
      * Returns the position of the robot on the field.
      *
@@ -107,7 +110,7 @@ public class Swerve extends SubsystemBase {
      * @param pose The position on the field that your robot is at.
      */
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(pose, getYaw());
+        swerveOdometry.resetPosition(getYaw(), getPositions(), pose);
     }
 
     /**
@@ -141,7 +144,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        swerveOdometry.update(getYaw(), getStates());
+        swerveOdometry.update(getYaw(), getPositions());
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder",
@@ -151,5 +154,13 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity",
                 mod.getState().speedMetersPerSecond);
         }
+    }
+
+    public SwerveModulePosition[] getPositions() {
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        for (SwerveModule mod : mSwerveMods) {
+            positions[mod.moduleNumber] = mod.getPosition();
+        }
+        return positions;
     }
 }
