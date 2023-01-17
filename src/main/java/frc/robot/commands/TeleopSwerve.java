@@ -1,9 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
@@ -19,25 +18,19 @@ public class TeleopSwerve extends CommandBase {
     private boolean openLoop;
 
     private Swerve s_Swerve;
-    private Joystick controller;
-    private int translationAxis;
-    private int strafeAxis;
-    private int rotationAxis;
+    private CommandXboxController controller;
     private Vision vision;
 
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Vision vision, Joystick controller, int translationAxis,
-        int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+    public TeleopSwerve(Swerve s_Swerve, Vision vision, CommandXboxController controller,
+        boolean fieldRelative, boolean openLoop) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         this.vision = new Vision();
 
         this.controller = controller;
-        this.translationAxis = translationAxis;
-        this.strafeAxis = strafeAxis;
-        this.rotationAxis = rotationAxis;
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
     }
@@ -45,9 +38,9 @@ public class TeleopSwerve extends CommandBase {
     @Override
     public void execute() {
         vision.update();
-        double yAxis = -controller.getRawAxis(translationAxis);
-        double xAxis = -controller.getRawAxis(strafeAxis);
-        double rAxis = -controller.getRawAxis(rotationAxis);
+        double yAxis = -controller.getLeftY();
+        double xAxis = -controller.getLeftX();
+        double rAxis = -controller.getRightX();
 
         /* Deadbands */
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
@@ -60,10 +53,7 @@ public class TeleopSwerve extends CommandBase {
         // rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         // }
 
-        rotation =
-            (controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound())
-                ? vision.getAimValue()
-                : rAxis * Constants.Swerve.maxAngularVelocity;
+        rotation = rAxis * Constants.Swerve.maxAngularVelocity;
 
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);

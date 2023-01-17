@@ -23,6 +23,8 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+    private double fieldOffset = gyro.getYaw();
+
 
     /**
      * Initializes swerve modules.
@@ -54,7 +56,7 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
-                    rotation, getYaw())
+                    rotation, Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset))
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
@@ -131,6 +133,14 @@ public class Swerve extends SubsystemBase {
      */
     public void zeroGyro() {
         gyro.zeroYaw();
+    }
+
+    /**
+     * Resets the gyro field relative driving offset
+     */
+    public void resetFieldRelativeOffset() {
+        // gyro.zeroYaw();
+        fieldOffset = getYaw().getDegrees();
     }
 
     /**
