@@ -32,8 +32,6 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new AHRS(Constants.Swerve.navXID);
         // gyro.configFactoryDefault();
-        zeroGyro();
-
         swerveOdometry =
             new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
 
@@ -139,7 +137,6 @@ public class Swerve extends SubsystemBase {
      * Resets the gyro field relative driving offset
      */
     public void resetFieldRelativeOffset() {
-        // gyro.zeroYaw();
         fieldOffset = getYaw().getDegrees();
     }
 

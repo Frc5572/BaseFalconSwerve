@@ -11,14 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.autos.ExampleAuto;
-import frc.robot.autos.LimelightAuto;
 import frc.robot.autos.ResnickAuto;
-import frc.robot.autos.UltrasonicAuto;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.other.Ultrasonic;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,13 +25,8 @@ public class RobotContainer {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
 
-    private final SendableChooser<String> autoChooser = new SendableChooser<>();
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private Command autoCommand;
-
-    private static final String exampleAuto = "Example Auto";
-    private static final String ultrasonicAuto = "Ultrasonic Auto";
-    private static final String limelightAuto = "Limelight Auto";
     private static final String resnickAuto = "Resnick Auto";
 
 
@@ -51,20 +41,14 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private Vision vision = new Vision();
-
-    private Ultrasonic ultrasonic = new Ultrasonic();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         this.fieldRelative = Constants.Swerve.isFieldRelative;
         this.openLoop = Constants.Swerve.isOpenLoop;
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver,
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
-        autoChooser.setDefaultOption("Example Auto", exampleAuto);
-        autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
-        autoChooser.addOption("Limelight Auto", limelightAuto);
-        autoChooser.addOption("Resnick Auto", resnickAuto);
+        autoChooser.addOption(resnickAuto, new ResnickAuto(s_Swerve));
         SmartDashboard.putData("Choose Auto: ", autoChooser);
         // Configure the button bindings
         configureButtonBindings();
@@ -89,19 +73,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        if (autoChooser.getSelected() == "Example Auto") {
-            System.out.println("Example Auto!!!!!!!!!!!!!!");
-            autoCommand = new ExampleAuto(s_Swerve);
-        } else if (autoChooser.getSelected() == "Ultrasonic Auto") {
-            System.out.println("Ultrasonic Auto!!!!!!!!!!!!!!");
-            autoCommand = new UltrasonicAuto(s_Swerve, ultrasonic);
-        } else if (autoChooser.getSelected() == "Limelight Auto") {
-            System.out.println("Limelight Auto!!!!!!!!!!!!!!");
-            autoCommand = new LimelightAuto(s_Swerve, vision);
-        } else if (autoChooser.getSelected() == "Resnick Auto") {
-            autoCommand = new ResnickAuto(s_Swerve);
-        }
-        return autoCommand;
+
+
+        return autoChooser.getSelected();
 
     }
 }

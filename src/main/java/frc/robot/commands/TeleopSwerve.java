@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
 /**
  * Creates an command for driving the swerve drive during tele-op
@@ -19,17 +18,14 @@ public class TeleopSwerve extends CommandBase {
 
     private Swerve s_Swerve;
     private CommandXboxController controller;
-    private Vision vision;
 
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Vision vision, CommandXboxController controller,
-        boolean fieldRelative, boolean openLoop) {
+    public TeleopSwerve(Swerve s_Swerve, CommandXboxController controller, boolean fieldRelative,
+        boolean openLoop) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
-        this.vision = new Vision();
-
         this.controller = controller;
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
@@ -37,7 +33,6 @@ public class TeleopSwerve extends CommandBase {
 
     @Override
     public void execute() {
-        vision.update();
         double yAxis = -controller.getLeftY();
         double xAxis = -controller.getLeftX();
         double rAxis = -controller.getRightX();
