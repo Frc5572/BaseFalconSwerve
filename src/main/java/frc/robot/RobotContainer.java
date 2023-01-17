@@ -5,11 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.ExampleAuto;
 import frc.robot.autos.LimelightAuto;
 import frc.robot.autos.ResnickAuto;
@@ -27,7 +28,7 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
+    private final CommandXboxController driver = new CommandXboxController(0);
 
     private final SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -40,9 +41,6 @@ public class RobotContainer {
 
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
 
@@ -61,8 +59,8 @@ public class RobotContainer {
     public RobotContainer() {
         this.fieldRelative = Constants.Swerve.isFieldRelative;
         this.openLoop = Constants.Swerve.isOpenLoop;
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver, translationAxis,
-            strafeAxis, rotationAxis, fieldRelative, openLoop));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, vision, driver,
+            Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
         autoChooser.setDefaultOption("Example Auto", exampleAuto);
         autoChooser.addOption("Ultrasonic Auto", ultrasonicAuto);
         autoChooser.addOption("Limelight Auto", limelightAuto);
@@ -80,7 +78,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        s_Swerve.zeroGyro();
+        driver.y().whileTrue((new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset())));
     }
 
     /**
