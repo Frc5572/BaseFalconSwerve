@@ -22,23 +22,21 @@ import frc.robot.SwerveModule;
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public AHRS gyro;
-    private double fieldOffset = gyro.getYaw();
+    AHRS gyro = new AHRS(Constants.Swerve.navXID);
+    double fieldOffset = gyro.getYaw();
 
 
     /**
      * Initializes swerve modules.
      */
     public Swerve() {
-        gyro = new AHRS(Constants.Swerve.navXID);
-        // gyro.configFactoryDefault();
-        swerveOdometry =
-            new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
-
         mSwerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)};
+
+        swerveOdometry =
+            new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
     }
 
     /**
@@ -152,6 +150,13 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getYaw(), getPositions());
+
+        SmartDashboard.putNumber("Gyro Yaw", getYaw().getDegrees());
+        SmartDashboard.putNumber("Robot X", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Robot Y", swerveOdometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Robot Rotation",
+            swerveOdometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("Field Offset", fieldOffset);
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder",
