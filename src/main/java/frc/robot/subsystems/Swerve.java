@@ -21,7 +21,6 @@ public class Swerve extends SubsystemBase {
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] swerveMods;
-    private double pidTurn = 0;
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
 
@@ -171,9 +170,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", swerveOdometry.getPoseMeters().getY());
         SmartDashboard.putNumber("Robot Rotation",
             swerveOdometry.getPoseMeters().getRotation().getDegrees());
-        SmartDashboard.putNumber("Gyro Yaw", yaw.getDegrees());
+        SmartDashboard.putNumber("Gyro Yaw", getYaw().getDegrees());
         SmartDashboard.putNumber("Field Offset", fieldOffset);
-        SmartDashboard.putNumber("Gyro Yaw - Offset", yaw.getDegrees() - fieldOffset);
+        SmartDashboard.putNumber("Gyro Yaw - Offset", getYaw().getDegrees() - fieldOffset);
 
 
         for (SwerveModule mod : swerveMods) {
