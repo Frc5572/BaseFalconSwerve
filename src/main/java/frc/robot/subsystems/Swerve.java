@@ -1,14 +1,15 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,22 +20,27 @@ import frc.robot.SwerveModule;
  */
 public class Swerve extends SubsystemBase {
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
-    public SwerveDriveOdometry swerveOdometry;
+    public SwerveDrivePoseEstimator swerveOdometry;
     public SwerveModule[] swerveMods;
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
+    private final Field2d field;
 
     /**
      * Initializes swerve modules.
      */
     public Swerve() {
+        field = new Field2d();
+        SmartDashboard.putData("Field Pos", field);
+
+
         swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)};
 
-        swerveOdometry =
-            new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
+        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
+            getPositions(), new Pose2d());
     }
 
     /**
@@ -109,7 +115,7 @@ public class Swerve extends SubsystemBase {
      * @return The pose of the robot (x and y are in meters).
      */
     public Pose2d getPose() {
-        return swerveOdometry.getPoseMeters();
+        return swerveOdometry.getEstimatedPosition();
     }
 
     /**
@@ -165,11 +171,12 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getYaw(), getPositions());
-
-        SmartDashboard.putNumber("Robot X", swerveOdometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Robot Y", swerveOdometry.getPoseMeters().getY());
+        // send robot pos to dashboard
+        field.setRobotPose(swerveOdometry.getEstimatedPosition());
+        SmartDashboard.putNumber("Robot X", swerveOdometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Robot Y", swerveOdometry.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Robot Rotation",
-            swerveOdometry.getPoseMeters().getRotation().getDegrees());
+            swerveOdometry.getEstimatedPosition().getRotation().getDegrees());
         SmartDashboard.putNumber("Gyro Yaw", getYaw().getDegrees());
         SmartDashboard.putNumber("Field Offset", fieldOffset);
         SmartDashboard.putNumber("Gyro Yaw - Offset", getYaw().getDegrees() - fieldOffset);
