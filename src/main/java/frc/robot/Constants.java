@@ -14,6 +14,21 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    public static class SwerveTransformPID {
+        public static final double pidXkP = 1.0;
+        public static final double pidXkD = 0.0;
+        public static final double pidXkI = 0.0;
+        public static final double pidYkP = 1.0;
+        public static final double pidYkD = 0.0;
+        public static final double pidYkI = 0.0;
+        public static final double pidTkP = 1.0;
+        public static final double pidTkD = 0.0;
+        public static final double pidTkI = 0.0;
+
+        public static final double maxAngularVelocity = 1.0;
+        public static final double maxAngularAcceleration = 0.3;
+    }
+
     /**
      * Swerve ID's
      */
