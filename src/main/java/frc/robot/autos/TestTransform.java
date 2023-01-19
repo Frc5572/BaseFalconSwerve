@@ -51,8 +51,6 @@ public class TestTransform extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double score = pose2d.minus(swerve.getPose()).getTranslation().getNorm()
-            + pose2d.getRotation().minus(swerve.getYaw()).getDegrees();
-        return score < 1.0;
+        return holonomicDriveController.atReference();
     }
 }
