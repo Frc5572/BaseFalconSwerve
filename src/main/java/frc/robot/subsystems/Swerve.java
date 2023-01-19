@@ -61,11 +61,6 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
 
-        // If pidTurn has value, it will override driver steering!!
-        if (pidTurn != 0) {
-            rotation = pidTurn;
-        }
-
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
@@ -151,7 +146,6 @@ public class Swerve extends SubsystemBase {
      * Resets the gyro field relative driving offset
      */
     public void resetFieldRelativeOffset() {
-        // gyro.zeroYaw();
         fieldOffset = getYaw().getDegrees();
     }
 
@@ -171,11 +165,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Rotation2d yaw = getYaw();
-        // swerveOdometry.update(getYaw(), getPositions());
-        swerveOdometry.update(new Rotation2d(yaw.getRadians()), getPositions());
-
-
+        swerveOdometry.update(getYaw(), getPositions());
 
         SmartDashboard.putNumber("Robot X", swerveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Robot Y", swerveOdometry.getPoseMeters().getY());
@@ -222,7 +212,4 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
-    public void useOutput(double output) {
-        pidTurn = output * 4;
-    }
 }
