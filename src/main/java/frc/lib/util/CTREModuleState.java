@@ -1,7 +1,7 @@
 package frc.lib.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.lib.swerve.SecondOrderSwerveModuleState;
 
 /**
  * Retrieve and set module states on CTRE devices
@@ -16,7 +16,7 @@ public class CTREModuleState {
      * @param desiredState The desired state.
      * @param currentAngle The current module angle.
      */
-    public static SwerveModuleState optimize(SwerveModuleState desiredState,
+    public static SecondOrderSwerveModuleState optimize(SecondOrderSwerveModuleState desiredState,
         Rotation2d currentAngle) {
         double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(),
             desiredState.angle.getDegrees());
@@ -26,7 +26,7 @@ public class CTREModuleState {
             targetSpeed = -targetSpeed;
             targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
         }
-        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+        return new SecondOrderSwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 
     /**
