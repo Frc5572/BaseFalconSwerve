@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
+import frc.robot.util.FieldConstants;
 
 public class TestTransform extends CommandBase {
 
@@ -27,20 +28,21 @@ public class TestTransform extends CommandBase {
             new TrapezoidProfile.Constraints(Constants.SwerveTransformPID.maxAngularVelocity,
                 Constants.SwerveTransformPID.maxAngularAcceleration)));
     Pose2d pose2d = new Pose2d();
+    private int aprilTagId;
 
-    public TestTransform(Swerve swerve, Transform2d transform2d) {
+    public TestTransform(Swerve swerve, Transform2d transform2d, int aprilTagId) {
 
         super();
         this.swerve = swerve;
         this.transform2d = transform2d;
         this.addRequirements(swerve);
-
+        this.aprilTagId = aprilTagId;
         holonomicDriveController.setTolerance(new Pose2d(.1, .1, Rotation2d.fromDegrees(1)));
     }
 
     @Override
     public void initialize() {
-        pose2d = swerve.getPose().plus(transform2d);
+        pose2d = FieldConstants.aprilTags.get(aprilTagId).toPose2d().plus(transform2d);
     }
 
     @Override

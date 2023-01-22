@@ -1,7 +1,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -21,12 +24,21 @@ public final class Constants {
         public static final double pidYkP = 1.0;
         public static final double pidYkD = 0.0;
         public static final double pidYkI = 0.0;
-        public static final double pidTkP = 1.0;
+        public static final double pidTkP = 3.0;
         public static final double pidTkD = 0.0;
         public static final double pidTkI = 0.0;
 
-        public static final double maxAngularVelocity = 1.0;
-        public static final double maxAngularAcceleration = 0.3;
+        public static final double maxAngularVelocity = 3.0;
+        public static final double maxAngularAcceleration = 3.0;
+    }
+
+    public static class CameraConstants {
+
+        public static final double pitch = 0.0;
+        public static final Transform3d kCameraToRobot =
+            new Transform3d(new Translation3d(), new Rotation3d(0, pitch, 0));
+        public static final String cameraName = "";
+        public static final double largestDistance = 0.1;
     }
 
     /**
