@@ -208,8 +208,8 @@ public class Swerve extends SubsystemBase {
                     var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
                     var robotPose =
                         camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
-                    // pose2dList.add(robotPose);
-                    swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
+                    pose2dList.add(robotPose);
+                    // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
                     if (robotPose.minus(getPose()).getTranslation()
                         .getNorm() < Constants.CameraConstants.largestDistance) {
                         swerveOdometry.addVisionMeasurement(robotPose, imageCaptureTime);
@@ -218,13 +218,16 @@ public class Swerve extends SubsystemBase {
             }
 
 
-            /**
-             * outer: for (int i = 0; i < pose2dList.size(); i++) { for (int j = i + 1; j <
-             * pose2dList.size(); j++) { var diff = pose2dList.get(i).minus(pose2dList.get(j)); if
-             * (diff.getTranslation() .getNorm() < Constants.CameraConstants.largestDistance) {
-             * swerveOdometry.resetPosition(getYaw(), getPositions(), pose2dList.get(i)); break
-             * outer; } } }
-             **/
+            outer: for (int i = 0; i < pose2dList.size(); i++) {
+                for (int j = i + 1; j < pose2dList.size(); j++) {
+                    var diff = pose2dList.get(i).minus(pose2dList.get(j));
+                    if (diff.getTranslation()
+                        .getNorm() < Constants.CameraConstants.largestDistance) {
+                        swerveOdometry.resetPosition(getYaw(), getPositions(), pose2dList.get(i));
+                        break outer;
+                    }
+                }
+            }
         }
 
 
