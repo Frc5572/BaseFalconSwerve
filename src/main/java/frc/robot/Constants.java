@@ -34,10 +34,12 @@ public final class Constants {
 
     public static class CameraConstants {
 
-        public static final double pitch = 0.0;
+        public static final double pitch = 40 * Math.PI / 180;
+        public static final double roll = Math.PI;
+        public static final double yaw = 0.0;
         public static final Transform3d kCameraToRobot =
-            new Transform3d(new Translation3d(), new Rotation3d(0, pitch, 0));
-        public static final String cameraName = "";
+            new Transform3d(new Translation3d(), new Rotation3d(roll, pitch, yaw));
+        public static final String cameraName = "pv2";
         public static final double largestDistance = 0.1;
     }
 
