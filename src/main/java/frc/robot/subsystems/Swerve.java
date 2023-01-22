@@ -40,7 +40,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)};
-        SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("Field Pos", m_field);
 
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
             getPositions(), new Pose2d());
