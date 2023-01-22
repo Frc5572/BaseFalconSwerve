@@ -225,4 +225,18 @@ public class Swerve extends SubsystemBase {
     public void useOutput(double output) {
         pidTurn = output * 4;
     }
+
+    /**
+     * Sets chassis speeds to swerve module stats.
+     *
+     * @param chassisSpeeds
+     */
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        SwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        for (SwerveModule mod : swerveMods) {
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
+        }
+    }
 }
