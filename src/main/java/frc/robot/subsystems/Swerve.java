@@ -69,21 +69,11 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
 
-        // If pidTurn has value, it will override driver steering!!
-        if (pidTurn != 0) {
-            rotation = pidTurn;
-        }
-
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
-                    rotation, Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset))
-                : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
-
-        for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
-        }
+        ChassisSpeeds chassisSpeeds = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
+                rotation, Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset))
+            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        setModuleStates(chassisSpeeds);
     }
 
     /**
@@ -93,15 +83,8 @@ public class Swerve extends SubsystemBase {
      * @param fieldRelative Whether the movement is relative to the field or absolute
      */
     public void setMotorsZero(boolean isOpenLoop, boolean fieldRelative) {
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, getYaw())
-                    : new ChassisSpeeds(0, 0, 0));
-
-        for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
-        }
         System.out.println("Setting Zero!!!!!!");
+        setModuleStates(new ChassisSpeeds(0, 0, 0));
     }
 
     /**
@@ -115,6 +98,17 @@ public class Swerve extends SubsystemBase {
         for (SwerveModule mod : swerveMods) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
         }
+    }
+
+    /**
+     * Sets swerve module states using Chassis Speeds.
+     *
+     * @param chassisSpeeds The desired Chassis Speeds
+     */
+    public void setModuleStates(ChassisSpeeds chassisSpeeds) {
+        SwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(swerveModuleStates);
     }
 
     /**
@@ -149,13 +143,6 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * Resets the gryo to 0 offset
-     */
-    public void zeroGyro() {
-        gyro.zeroYaw();
-    }
-
-    /**
      * Resets the gyro field relative driving offset
      */
     public void resetFieldRelativeOffset() {
@@ -170,11 +157,6 @@ public class Swerve extends SubsystemBase {
         float yaw = gyro.getYaw();
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
             : Rotation2d.fromDegrees(yaw);
-    }
-
-    public String getStringYaw() {
-        float yaw = gyro.getYaw();
-        return (Constants.Swerve.invertGyro) ? "Yaw: " + (360 - yaw) : "Yaw: " + yaw;
     }
 
     @Override
@@ -256,15 +238,6 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * Get rotation in Degrees of Gyro
-     *
-     * @return Rotation of gyro in Degrees
-     */
-    public double getRotation() {
-        return getYaw().getDegrees();
-    }
-
-    /**
      * Get position of all swerve modules
      *
      * @return Array of Swerve Module Positions
@@ -277,23 +250,5 @@ public class Swerve extends SubsystemBase {
 
         }
         return positions;
-    }
-
-    public void useOutput(double output) {
-        pidTurn = output * 4;
-    }
-
-    /**
-     * Sets chassis speeds to swerve module stats.
-     *
-     * @param chassisSpeeds
-     */
-    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
-        for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
-        }
     }
 }

@@ -22,10 +22,8 @@ public class ResnickAuto extends frc.robot.commands.AutoBase {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", 1, .5);
         PPSwerveControllerCommand resnick = baseSwerveCommand(trajectory);
         PathPlannerState initialState = trajectory.getInitialState();
-        addCommands(new InstantCommand(() -> swerve.zeroGyro()),
-            new InstantCommand(
-                () -> swerve.resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(),
-                    initialState.holonomicRotation))),
+        addCommands(new InstantCommand(() -> swerve.resetOdometry(
+            new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation))),
             resnick);
     }
 
