@@ -49,7 +49,7 @@ public class TestTransform extends CommandBase {
     public void execute() {
         ChassisSpeeds ctrlEffort =
             holonomicDriveController.calculate(swerve.getPose(), pose2d, 0, pose2d.getRotation());
-        swerve.setChassisSpeeds(ctrlEffort);
+        swerve.setModuleStates(ctrlEffort);
     }
 
     @Override
