@@ -17,16 +17,17 @@ public class CTREModuleState {
      * @param currentAngle The current module angle.
      */
     public static SecondOrderSwerveModuleState optimize(SecondOrderSwerveModuleState desiredState,
-        Rotation2d currentAngle) {
+        Rotation2d currentAngle, double omegaRadiansPerSecond) {
         double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(),
-            desiredState.angle.getDegrees());
+            desiredState.angle.getDegrees() + omegaRadiansPerSecond);
         double targetSpeed = desiredState.speedMetersPerSecond;
         double delta = targetAngle - currentAngle.getDegrees();
         if (Math.abs(delta) > 90) {
             targetSpeed = -targetSpeed;
             targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
         }
-        return new SecondOrderSwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+        return new SecondOrderSwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle),
+            omegaRadiansPerSecond);
     }
 
     /**

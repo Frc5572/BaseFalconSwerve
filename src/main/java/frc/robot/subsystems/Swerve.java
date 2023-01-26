@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.swerve.SecondOrderSwerveDriveKinematics;
+import frc.lib.swerve.SecondOrderSwerveModuleState;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
@@ -47,11 +48,14 @@ public class Swerve extends SubsystemBase {
      * New command to set wheels inward.
      */
     public void wheelsIn() {
-        swerveMods[0].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(45)), false);
-        swerveMods[1].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(135)), false);
-        swerveMods[2].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-45)), false);
-        swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
-            false);
+        swerveMods[0].setDesiredState(
+            new SecondOrderSwerveModuleState(2, Rotation2d.fromDegrees(45), 0.0), 0.0, false);
+        swerveMods[1].setDesiredState(
+            new SecondOrderSwerveModuleState(2, Rotation2d.fromDegrees(135), 0.0), 0.0, false);
+        swerveMods[2].setDesiredState(
+            new SecondOrderSwerveModuleState(2, Rotation2d.fromDegrees(-45), 0.0), 0.0, false);
+        swerveMods[3].setDesiredState(
+            new SecondOrderSwerveModuleState(2, Rotation2d.fromDegrees(-135), 0.0), 0.0, false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
     }
 
@@ -66,8 +70,8 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
 
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative
+        SecondOrderSwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.secondOrderSwerveKinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
                     rotation, Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset))
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
@@ -75,7 +79,8 @@ public class Swerve extends SubsystemBase {
             Constants.Swerve.maxSpeed);
 
         for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber],
+                gyro.getRawGyroZ() * Math.PI / 180, isOpenLoop);
         }
     }
 
@@ -86,13 +91,13 @@ public class Swerve extends SubsystemBase {
      * @param fieldRelative Whether the movement is relative to the field or absolute
      */
     public void setMotorsZero(boolean isOpenLoop, boolean fieldRelative) {
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+        SecondOrderSwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.secondOrderSwerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, getYaw())
                     : new ChassisSpeeds(0, 0, 0));
 
         for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], 0.0, isOpenLoop);
         }
         System.out.println("Setting Zero!!!!!!");
     }
@@ -102,12 +107,13 @@ public class Swerve extends SubsystemBase {
      *
      * @param desiredStates The desired states of the swerve modules
      */
-    public void setModuleStates(SwerveModuleState[] desiredStates) {
+    public void setModuleStates(SecondOrderSwerveModuleState[] desiredStates,
+        double omegaRadiansPerSeond) {
         SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
             Constants.Swerve.maxSpeed);
 
         for (SwerveModule mod : swerveMods) {
-            mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+            mod.setDesiredState(desiredStates[mod.moduleNumber], omegaRadiansPerSeond, false);
         }
     }
 
