@@ -26,7 +26,6 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator swerveOdometry;
     private PhotonCamera cam = new PhotonCamera(Constants.CameraConstants.cameraName);
     public SwerveModule[] swerveMods;
-    private double pidTurn = 0;
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
     private final Field2d m_field = new Field2d();
