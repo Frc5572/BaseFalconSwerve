@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.autos.ResnickAuto;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
 
@@ -27,28 +26,14 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private static final String resnickAuto = "Resnick Auto";
-
-
-    /* Drive Controls */
-
-    /* Driver Buttons */
-
-
-    boolean fieldRelative;
-    boolean openLoop;
-
-
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        this.fieldRelative = Constants.Swerve.isFieldRelative;
-        this.openLoop = Constants.Swerve.isOpenLoop;
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
-        autoChooser.addOption(resnickAuto, new ResnickAuto(s_Swerve));
+        // autoChooser.addOption(resnickAuto, new ResnickAuto(s_Swerve));
         SmartDashboard.putData("Choose Auto: ", autoChooser);
         // Configure the button bindings
         configureButtonBindings();
@@ -72,9 +57,6 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-
-
-
         return autoChooser.getSelected();
 
     }
