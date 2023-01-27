@@ -3,7 +3,6 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -107,7 +106,7 @@ public final class Constants {
             public static final int driveMotorID = 51;
             public static final int angleMotorID = 52;
             public static final int canCoderID = 2;
-            public static final double angleOffset = 106.436;
+            public static final double angleOffset = 109.775;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -119,7 +118,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 1;
-            public static final double angleOffset = 259.629;
+            public static final double angleOffset = 259.541;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -131,7 +130,7 @@ public final class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 53;
             public static final int canCoderID = 4;
-            public static final double angleOffset = 32.256;
+            public static final double angleOffset = 31.816;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -144,18 +143,6 @@ public final class Constants {
      * Autonomous constants for swerve bot.
      */
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 1;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
-
-        // Constraint for the motion profilied robot angle controller
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-            new TrapezoidProfile.Constraints(kMaxAngularSpeedRadiansPerSecond,
-                kMaxAngularSpeedRadiansPerSecondSquared);
     }
 }
