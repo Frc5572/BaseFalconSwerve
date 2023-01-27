@@ -26,23 +26,11 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-
-    /* Drive Controls */
-
-    /* Driver Buttons */
-
-
-    boolean fieldRelative;
-    boolean openLoop;
-
-
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        this.fieldRelative = Constants.Swerve.isFieldRelative;
-        this.openLoop = Constants.Swerve.isOpenLoop;
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
         // autoChooser.addOption(resnickAuto, new ResnickAuto(s_Swerve));
@@ -69,9 +57,6 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-
-
-
         return autoChooser.getSelected();
 
     }
