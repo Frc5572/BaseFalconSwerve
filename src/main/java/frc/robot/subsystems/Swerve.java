@@ -28,18 +28,20 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] swerveMods;
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
-    private final Field2d m_field = new Field2d();
+    private final Field2d field = new Field2d();
     private boolean hasInitialized = false;
 
     /**
      * Initializes swerve modules.
      */
     public Swerve() {
+        SmartDashboard.putData("Field Pos", field);
+
+
         swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)};
-        SmartDashboard.putData("Field Pos", m_field);
 
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
             getPositions(), new Pose2d());
@@ -67,7 +69,6 @@ public class Swerve extends SubsystemBase {
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
-
         ChassisSpeeds chassisSpeeds = fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
                 rotation, Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset))
@@ -158,6 +159,11 @@ public class Swerve extends SubsystemBase {
             : Rotation2d.fromDegrees(yaw);
     }
 
+    public String getStringYaw() {
+        float yaw = gyro.getYaw();
+        return (Constants.Swerve.invertGyro) ? "Yaw: " + (360 - yaw) : "Yaw: " + yaw;
+    }
+
     @Override
     public void periodic() {
         Rotation2d yaw = getYaw();
@@ -212,7 +218,7 @@ public class Swerve extends SubsystemBase {
         }
 
 
-        m_field.setRobotPose(swerveOdometry.getEstimatedPosition());
+        field.setRobotPose(swerveOdometry.getEstimatedPosition());
 
         SmartDashboard.putBoolean("Has Initialized", hasInitialized);
         SmartDashboard.putNumber("Robot X", swerveOdometry.getEstimatedPosition().getX());
