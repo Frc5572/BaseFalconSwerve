@@ -39,7 +39,7 @@ public final class Constants {
         public static final double roll = Math.PI;
         public static final double yaw = 0.0;
         public static final Transform3d kCameraToRobot =
-            new Transform3d(new Translation3d(Units.inchesToMeters(-10), Units.inchesToMeters(-2),
+            new Transform3d(new Translation3d(Units.inchesToMeters(-10), Units.inchesToMeters(2),
                 Units.inchesToMeters(7.5)), new Rotation3d(roll, pitch, yaw));
         public static final String cameraName = "pv2";
         public static final double largestDistance = 0.1;
