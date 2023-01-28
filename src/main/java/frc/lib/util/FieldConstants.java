@@ -256,6 +256,9 @@ public class FieldConstants {
      * Flips a pose to the correct side of the field based on the current alliance color. By
      * default, all translations and poses in {@link FieldConstants} are stored with the origin at
      * the rightmost point on the BLUE ALLIANCE wall.
+     *
+     * @param pose
+     * @return Pose2d flipped to Red Alliance
      */
     public static Pose2d allianceFlip(Pose2d pose) {
         if (DriverStation.getAlliance() == Alliance.Red) {
@@ -270,7 +273,7 @@ public class FieldConstants {
      * elementwise maximum
      *
      * @param x
-     * @return
+     * @return Max Translation
      */
     private static Translation2d max(Translation2d... x) {
         Translation2d r = x[0];
@@ -287,6 +290,10 @@ public class FieldConstants {
 
     /**
      * Vector dot product for Translation2d types
+     *
+     * @param a
+     * @param b
+     * @return Dot
      */
     private static double dot(Translation2d a, Translation2d b) {
         return a.getX() * b.getX() + a.getY() * b.getY();
@@ -298,7 +305,7 @@ public class FieldConstants {
      * @param p
      * @param p0
      * @param p1
-     * @return
+     * @return Line SDF
      */
     private static double lineSdf(Translation2d p, Translation2d p0, Translation2d p1) {
         Translation2d pa = p.minus(p0);
@@ -313,7 +320,7 @@ public class FieldConstants {
      * @param P
      * @param p0
      * @param p1
-     * @return
+     * @return Box SDF
      */
     private static double boxSdf(Translation2d P, Translation2d p0, Translation2d p1) {
         Translation2d min =
@@ -328,6 +335,9 @@ public class FieldConstants {
 
     /**
      * find minimum distance given a set of distances (variadic min)
+     *
+     * @param x
+     * @return UNion SDF
      */
     private static double unionSdf(double... x) {
         double y = x[0];
@@ -344,7 +354,7 @@ public class FieldConstants {
      *
      * @param p
      * @param radius
-     * @return
+     * @return field SDF
      */
     public static double fieldSdf(Translation2d p, double radius) {
         return fieldSdf(p) - radius;

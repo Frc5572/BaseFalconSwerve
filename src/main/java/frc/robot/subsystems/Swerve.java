@@ -173,9 +173,9 @@ public class Swerve extends SubsystemBase {
         if (res.hasTargets()) {
             var imageCaptureTime = res.getTimestampSeconds();
             if (!hasInitialized) {
-                var Target = res.getBestTarget();
-                var camToTargetTrans = Target.getBestCameraToTarget();
-                var AprilTagPose = FieldConstants.aprilTags.get(Target.getFiducialId());
+                var target = res.getBestTarget();
+                var camToTargetTrans = target.getBestCameraToTarget();
+                var AprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
                 if (AprilTagPose != null) {
                     var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
                     var robotPose =
@@ -192,9 +192,9 @@ public class Swerve extends SubsystemBase {
             // for (var Target : res.targets) {
 
             var camToTargetTrans = target.getBestCameraToTarget();
-            var AprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
-            if (AprilTagPose != null) {
-                var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
+            var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
+            if (aprilTagPose != null) {
+                var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
                 var robotPose =
                     camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
                 pose2dList.add(robotPose);
