@@ -169,7 +169,7 @@ public class FieldConstants {
         public static final Translation2d[] regionCorners =
             new Translation2d[] {new Translation2d(midX, rightY), new Translation2d(midX, midY),
                 new Translation2d(outerX, midY), new Translation2d(outerX, leftY),
-                new Translation2d(innerX, leftY), new Translation2d(innerX, rightY),};
+                new Translation2d(innerX, leftY), new Translation2d(innerX, rightY)};
 
         // Double substation dimensions
         public static final double doubleSubstationLength = Units.inchesToMeters(14.0);
