@@ -21,7 +21,7 @@
 
 // Modified by 5572 to include fieldSdf and associated Signed Distance Field functions
 
-package frc.robot.util;
+package frc.lib.util;
 
 import java.util.Map;
 import edu.wpi.first.math.MathUtil;
@@ -35,13 +35,18 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
+/**
+ * Field Constants
+ */
 public class FieldConstants {
 
     public static final double fieldLength = Units.inchesToMeters(651.25);
     public static final double fieldWidth = Units.inchesToMeters(315.5);
     public static final double tapeWidth = Units.inchesToMeters(2.0);
 
-    // Dimensions for community and charging station, including the tape.
+    /**
+     * Dimensions for community and charging station, including the tape.
+     */
     public static final class Community {
         // Region dimensions
         public static final double innerX = 0.0;

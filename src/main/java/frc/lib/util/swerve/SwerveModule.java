@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.lib.util.swerve;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -9,7 +9,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
-import frc.lib.util.CTREModuleState;
+import frc.lib.util.ctre.CTREModuleState;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 /**
  * Base Swerve Module Class. Creates an instance of the swerve module
@@ -30,7 +32,7 @@ public class SwerveModule {
      * @param moduleNumber Swerve Module ID. Must be unique
      * @param constants Constants specific to the swerve module
      */
-    public SwerveModule(int moduleNumber, frc.lib.util.SwerveModuleConstants constants) {
+    public SwerveModule(int moduleNumber, frc.lib.util.swerve.SwerveModuleConstants constants) {
         this.moduleNumber = moduleNumber;
         angleOffset = constants.angleOffset;
 

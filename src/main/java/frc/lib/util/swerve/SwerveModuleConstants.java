@@ -1,4 +1,4 @@
-package frc.lib.util;
+package frc.lib.util.swerve;
 
 /**
  * Constants file used when creating swerve modules

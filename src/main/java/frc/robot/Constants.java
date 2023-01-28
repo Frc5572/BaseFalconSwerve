@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.lib.util.SwerveModuleConstants;
+import frc.lib.util.swerve.SwerveModuleConstants;
 
 /**
  * Constants file.
@@ -16,6 +16,9 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    /**
+     * PID constants for Swerve Auto Holonomic Drive Controller
+     */
     public static class SwerveTransformPID {
         public static final double pidXkP = 1.5;
         public static final double pidXkI = 0.0;
@@ -32,6 +35,9 @@ public final class Constants {
         public static final double stdDevMod = 2.0;
     }
 
+    /**
+     * Camera offset constants
+     */
     public static class CameraConstants {
 
         public static final double pitch = 0 * Math.PI / 180;
