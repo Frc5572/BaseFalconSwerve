@@ -37,7 +37,7 @@ public class TestTransform extends CommandBase {
         this.transform2d = transform2d;
         this.addRequirements(swerve);
         this.aprilTagId = aprilTagId;
-        holonomicDriveController.setTolerance(new Pose2d(.1, .1, Rotation2d.fromDegrees(1)));
+        holonomicDriveController.setTolerance(new Pose2d(.01, .01, Rotation2d.fromDegrees(1)));
     }
 
     @Override

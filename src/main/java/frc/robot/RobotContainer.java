@@ -67,6 +67,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         driver.y().whileTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
+        driver.x().whileTrue(new TestTransform(s_Swerve,
+            new Transform2d(new Translation2d(1, 0), Rotation2d.fromDegrees(180)), 7));
+        driver.a().whileTrue(new InstantCommand(() -> s_Swerve.resetInitialized()));
     }
 
     /**
@@ -78,7 +81,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
 
         return new TestTransform(s_Swerve,
-            new Transform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(180)), 2);
+            new Transform2d(new Translation2d(1, 0), Rotation2d.fromDegrees(180)), 7);
 
         // return autoChooser.getSelected();
 

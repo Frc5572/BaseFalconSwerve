@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import org.photonvision.PhotonCamera;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -167,8 +168,7 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         Rotation2d yaw = getYaw();
-        // swerveOdometry.update(getYaw(), getPositions());
-        swerveOdometry.update(new Rotation2d(yaw.getRadians()), getPositions());
+        swerveOdometry.update(yaw, getPositions());
         var res = cam.getLatestResult();
         if (res.hasTargets()) {
             var imageCaptureTime = res.getTimestampSeconds();
@@ -188,21 +188,26 @@ public class Swerve extends SubsystemBase {
 
             }
             var pose2dList = new ArrayList<Pose2d>();
-            for (var Target : res.targets) {
-                var camToTargetTrans = Target.getBestCameraToTarget();
-                var AprilTagPose = FieldConstants.aprilTags.get(Target.getFiducialId());
-                if (AprilTagPose != null) {
-                    var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
-                    var robotPose =
-                        camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
-                    pose2dList.add(robotPose);
-                    // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
-                    if (robotPose.minus(getPose()).getTranslation()
-                        .getNorm() < Constants.CameraConstants.largestDistance) {
-                        swerveOdometry.addVisionMeasurement(robotPose, imageCaptureTime);
-                    }
+            var target = res.getBestTarget();
+            // for (var Target : res.targets) {
+
+            var camToTargetTrans = target.getBestCameraToTarget();
+            var AprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
+            if (AprilTagPose != null) {
+                var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
+                var robotPose =
+                    camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
+                pose2dList.add(robotPose);
+                // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
+                if (robotPose.minus(getPose()).getTranslation()
+                    .getNorm() < Constants.CameraConstants.largestDistance) {
+                    swerveOdometry.addVisionMeasurement(robotPose, imageCaptureTime,
+                        VecBuilder.fill(Constants.SwerveTransformPID.stdDevMod / target.getArea(),
+                            Constants.SwerveTransformPID.stdDevMod / target.getArea(),
+                            Constants.SwerveTransformPID.stdDevMod / target.getArea()));
                 }
             }
+            // }
 
 
             outer: for (int i = 0; i < pose2dList.size(); i++) {
@@ -255,5 +260,9 @@ public class Swerve extends SubsystemBase {
 
         }
         return positions;
+    }
+
+    public void resetInitialized() {
+        this.hasInitialized = false;
     }
 }
