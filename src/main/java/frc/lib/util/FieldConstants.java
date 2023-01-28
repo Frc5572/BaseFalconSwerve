@@ -150,7 +150,7 @@ public class FieldConstants {
             new Translation2d(complexLowXCones, nodeFirstY + nodeSeparationY * 6),
             new Translation2d(complexLowXCubes, nodeFirstY + nodeSeparationY * 7),
             new Translation2d(complexLowXCones,
-                nodeFirstY + nodeSeparationY * 8 + complexLowOuterYOffset),};
+                nodeFirstY + nodeSeparationY * 8 + complexLowOuterYOffset)};
     }
 
     /**
@@ -257,7 +257,7 @@ public class FieldConstants {
      * default, all translations and poses in {@link FieldConstants} are stored with the origin at
      * the rightmost point on the BLUE ALLIANCE wall.
      *
-     * @param pose
+     * @param pose Initial Pose
      * @return Pose2d flipped to Red Alliance
      */
     public static Pose2d allianceFlip(Pose2d pose) {
@@ -272,7 +272,7 @@ public class FieldConstants {
     /**
      * elementwise maximum
      *
-     * @param x
+     * @param x Translation
      * @return Max Translation
      */
     private static Translation2d max(Translation2d... x) {
@@ -291,8 +291,8 @@ public class FieldConstants {
     /**
      * Vector dot product for Translation2d types
      *
-     * @param a
-     * @param b
+     * @param a Translation A
+     * @param b Translation B
      * @return Dot
      */
     private static double dot(Translation2d a, Translation2d b) {
@@ -302,9 +302,9 @@ public class FieldConstants {
     /**
      * https://www.youtube.com/watch?v=PMltMdi1Wzg
      *
-     * @param p
-     * @param p0
-     * @param p1
+     * @param P P
+     * @param p0 P0
+     * @param p1 P1
      * @return Line SDF
      */
     private static double lineSdf(Translation2d p, Translation2d p0, Translation2d p1) {
@@ -317,9 +317,9 @@ public class FieldConstants {
     /**
      * https://www.youtube.com/watch?v=62-pRVZuS5c
      *
-     * @param P
-     * @param p0
-     * @param p1
+     * @param P P
+     * @param p0 P0
+     * @param p1 P1
      * @return Box SDF
      */
     private static double boxSdf(Translation2d P, Translation2d p0, Translation2d p1) {
@@ -336,7 +336,7 @@ public class FieldConstants {
     /**
      * find minimum distance given a set of distances (variadic min)
      *
-     * @param x
+     * @param x Something
      * @return UNion SDF
      */
     private static double unionSdf(double... x) {
@@ -352,8 +352,8 @@ public class FieldConstants {
     /**
      * Find the minimum distance from a circular robot to an obstacle on the field.
      *
-     * @param p
-     * @param radius
+     * @param p Starting translation
+     * @param radius Radius
      * @return field SDF
      */
     public static double fieldSdf(Translation2d p, double radius) {

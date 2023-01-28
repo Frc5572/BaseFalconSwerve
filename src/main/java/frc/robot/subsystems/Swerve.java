@@ -175,9 +175,9 @@ public class Swerve extends SubsystemBase {
             if (!hasInitialized) {
                 var target = res.getBestTarget();
                 var camToTargetTrans = target.getBestCameraToTarget();
-                var AprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
-                if (AprilTagPose != null) {
-                    var camPose = AprilTagPose.transformBy(camToTargetTrans.inverse());
+                var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
+                if (aprilTagPose != null) {
+                    var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
                     var robotPose =
                         camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
                     swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
