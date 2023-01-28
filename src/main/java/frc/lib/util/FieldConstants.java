@@ -50,17 +50,17 @@ public class FieldConstants {
     public static final class Community {
         // Region dimensions
         public static final double innerX = 0.0;
-        public static final double midX = Units.inchesToMeters(132.375); // Tape to the left of
-                                                                         // charging station
-        public static final double outerX = Units.inchesToMeters(193.25); // Tape to the right of
-                                                                          // charging station
+        // Tape to the left of charging station
+        public static final double midX = Units.inchesToMeters(132.375);
+        // Tape to the right of charging station
+        public static final double outerX = Units.inchesToMeters(193.25);
         public static final double leftY = Units.feetToMeters(18.0);
         public static final double midY = leftY - Units.inchesToMeters(59.39) + tapeWidth;
         public static final double rightY = 0.0;
         public static final Translation2d[] regionCorners = new Translation2d[] {
             new Translation2d(innerX, rightY), new Translation2d(innerX, leftY),
             new Translation2d(midX, leftY), new Translation2d(midX, midY),
-            new Translation2d(outerX, midY), new Translation2d(outerX, rightY),};
+            new Translation2d(outerX, midY), new Translation2d(outerX, rightY)};
 
         // Charging station dimensions
         public static final double chargingStationLength = Units.inchesToMeters(76.125);
@@ -88,15 +88,14 @@ public class FieldConstants {
                 new Translation2d(cableBumpOuterX, chargingStationRightY)};
     }
 
-    // Dimensions for grids and nodes
+    /**
+     * Dimensions for grids and nodes
+     */
     public static final class Grids {
         // X layout
         public static final double outerX = Units.inchesToMeters(54.25);
-        public static final double lowX = outerX - (Units.inchesToMeters(14.25) / 2.0); // Centered
-                                                                                        // when
-                                                                                        // under
-                                                                                        // cube
-                                                                                        // nodes
+        // Centered when under cube nodes
+        public static final double lowX = outerX - (Units.inchesToMeters(14.25) / 2.0);
         public static final double midX = outerX - Units.inchesToMeters(22.75);
         public static final double highX = outerX - Units.inchesToMeters(39.75);
 
@@ -132,14 +131,12 @@ public class FieldConstants {
             }
         }
 
-        // Complex low layout (shifted to account for cube vs cone rows and wide edge
-        // nodes)
-        public static final double complexLowXCones = outerX - Units.inchesToMeters(16.0) / 2.0; // Centered
-                                                                                                 // X
-                                                                                                 // under
-                                                                                                 // cone
-                                                                                                 // nodes
-        public static final double complexLowXCubes = lowX; // Centered X under cube nodes
+        // Complex low layout
+        // shifted to account for cube vs cone rows and wide edge nodes
+        public static final double complexLowXCones = outerX - Units.inchesToMeters(16.0) / 2.0;
+        // Centered X under cone nodes
+        public static final double complexLowXCubes = lowX;
+        // Centered X under cube nodes
         public static final double complexLowOuterYOffset =
             nodeFirstY - Units.inchesToMeters(3.0) - (Units.inchesToMeters(25.75) / 2.0);
 
@@ -156,7 +153,9 @@ public class FieldConstants {
                 nodeFirstY + nodeSeparationY * 8 + complexLowOuterYOffset),};
     }
 
-    // Dimensions for loading zone and substations, including the tape
+    /**
+     * Dimensions for loading zone and substations, including the tape
+     */
     public static final class LoadingZone {
         // Region dimensions
         public static final double width = Units.inchesToMeters(99.0);
@@ -166,12 +165,11 @@ public class FieldConstants {
         public static final double leftY = FieldConstants.fieldWidth;
         public static final double midY = leftY - Units.inchesToMeters(50.5);
         public static final double rightY = leftY - width;
+        // Start at lower left next to border with opponent community
         public static final Translation2d[] regionCorners =
-            new Translation2d[] {new Translation2d(midX, rightY), // Start at lower left next to
-                                                                  // border with opponent community
-                new Translation2d(midX, midY), new Translation2d(outerX, midY),
-                new Translation2d(outerX, leftY), new Translation2d(innerX, leftY),
-                new Translation2d(innerX, rightY),};
+            new Translation2d[] {new Translation2d(midX, rightY), new Translation2d(midX, midY),
+                new Translation2d(outerX, midY), new Translation2d(outerX, leftY),
+                new Translation2d(innerX, leftY), new Translation2d(innerX, rightY),};
 
         // Double substation dimensions
         public static final double doubleSubstationLength = Units.inchesToMeters(14.0);
@@ -197,7 +195,9 @@ public class FieldConstants {
             singleSubstationLowZ + singleSubstationHeight;
     }
 
-    // Locations of staged game pieces
+    /**
+     * Locations of staged game pieces
+     */
     public static final class StagingLocations {
         public static final double centerOffsetX = Units.inchesToMeters(47.36);
         public static final double positionX = fieldLength / 2.0 - Units.inchesToMeters(47.36);
@@ -212,16 +212,17 @@ public class FieldConstants {
         }
     }
 
-    // AprilTag locations (do not flip for red alliance)
+    /**
+     * AprilTag locations (do not flip for red alliance)
+     */
     public static final Map<Integer, Pose3d> aprilTags = Map.of(1,
         new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19),
             Units.inchesToMeters(18.22), new Rotation3d(0.0, 0.0, Math.PI)),
         2,
         new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19),
             Units.inchesToMeters(18.22), new Rotation3d(0.0, 0.0, Math.PI)),
-        3, new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19), // FIRST's diagram
-                                                                                  // has a typo (it
-                                                                                  // says 147.19)
+        3,
+        new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19),
             Units.inchesToMeters(18.22), new Rotation3d(0.0, 0.0, Math.PI)),
         4,
         new Pose3d(Units.inchesToMeters(636.96), Units.inchesToMeters(265.74),
@@ -229,9 +230,8 @@ public class FieldConstants {
         5,
         new Pose3d(Units.inchesToMeters(14.25), Units.inchesToMeters(265.74),
             Units.inchesToMeters(27.38), new Rotation3d()),
-        6, new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(174.19), // FIRST's diagram
-                                                                                 // has a typo (it
-                                                                                 // says 147.19)
+        6,
+        new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(174.19),
             Units.inchesToMeters(18.22), new Rotation3d()),
         7,
         new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19),
@@ -266,7 +266,12 @@ public class FieldConstants {
         }
     }
 
-    /* elementwise maximum */
+    /**
+     * elementwise maximum
+     *
+     * @param x
+     * @return
+     */
     private static Translation2d max(Translation2d... x) {
         Translation2d r = x[0];
         for (int i = 1; i < x.length; i++) {
@@ -280,12 +285,21 @@ public class FieldConstants {
         return r;
     }
 
-    /* Vector dot product for Translation2d types */
+    /**
+     * Vector dot product for Translation2d types
+     */
     private static double dot(Translation2d a, Translation2d b) {
         return a.getX() * b.getX() + a.getY() * b.getY();
     }
 
-    // https://www.youtube.com/watch?v=PMltMdi1Wzg
+    /**
+     * https://www.youtube.com/watch?v=PMltMdi1Wzg
+     *
+     * @param p
+     * @param p0
+     * @param p1
+     * @return
+     */
     private static double lineSdf(Translation2d p, Translation2d p0, Translation2d p1) {
         Translation2d pa = p.minus(p0);
         Translation2d ba = p1.minus(p0);
@@ -293,7 +307,14 @@ public class FieldConstants {
         return pa.minus(ba.times(h)).getNorm();
     }
 
-    // https://www.youtube.com/watch?v=62-pRVZuS5c
+    /**
+     * https://www.youtube.com/watch?v=62-pRVZuS5c
+     *
+     * @param P
+     * @param p0
+     * @param p1
+     * @return
+     */
     private static double boxSdf(Translation2d P, Translation2d p0, Translation2d p1) {
         Translation2d min =
             new Translation2d(Math.min(p0.getX(), p1.getX()), Math.min(p0.getY(), p1.getY()));
@@ -305,7 +326,9 @@ public class FieldConstants {
         return max(d, new Translation2d()).getNorm() + Math.min(Math.max(d.getX(), d.getY()), 0.0);
     }
 
-    /* find minimum distance given a set of distances (variadic min) */
+    /**
+     * find minimum distance given a set of distances (variadic min)
+     */
     private static double unionSdf(double... x) {
         double y = x[0];
         for (int i = 1; i < x.length; i++) {
@@ -316,12 +339,20 @@ public class FieldConstants {
         return y;
     }
 
-    /* Find the minimum distance from a circular robot to an obstacle on the field. */
+    /**
+     * Find the minimum distance from a circular robot to an obstacle on the field.
+     *
+     * @param p
+     * @param radius
+     * @return
+     */
     public static double fieldSdf(Translation2d p, double radius) {
         return fieldSdf(p) - radius;
     }
 
-    /* Find the minimum distance from a point to an obstacle on the field. */
+    /**
+     * Find the minimum distance from a point to an obstacle on the field.
+     */
     public static double fieldSdf(Translation2d p) {
         Translation2d q = new Translation2d(fieldLength - p.getX(), p.getY());
         Translation2d gridCorner = new Translation2d(Grids.outerX, Community.leftY);
