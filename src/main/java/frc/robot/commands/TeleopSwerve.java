@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
@@ -39,10 +41,9 @@ public class TeleopSwerve extends CommandBase {
         double raxis = -controller.getRightX();
 
         /* Deadbands */
-        yaxis = (Math.abs(yaxis) < Constants.stickDeadband) ? 0 : yaxis;
-        xaxis = (Math.abs(xaxis) < Constants.stickDeadband) ? 0 : xaxis;
-        raxis = (Math.abs(raxis) < Constants.stickDeadband) ? 0 : raxis;
-        // System.out.println(swerveDrive.getStringYaw());
+        yaxis = Conversions.applySwerveCurve(yaxis, Constants.STICK_DEADBAND);
+        xaxis = Conversions.applySwerveCurve(xaxis, Constants.STICK_DEADBAND);
+        raxis = MathUtil.applyDeadband(raxis, Constants.STICK_DEADBAND);
 
         Translation2d translation =
             new Translation2d(yaxis, xaxis).times(Constants.Swerve.maxSpeed);

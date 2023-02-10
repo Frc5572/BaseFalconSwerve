@@ -14,7 +14,7 @@ import frc.lib.util.swerve.SwerveModuleConstants;
  */
 
 public final class Constants {
-    public static final double stickDeadband = 0.1;
+    public static final double STICK_DEADBAND = 0.1;
 
     /**
      * PID constants for Swerve Auto Holonomic Drive Controller
