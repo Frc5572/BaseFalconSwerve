@@ -1,74 +1,49 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
 /**
  * Creates an command for driving the swerve drive during tele-op
  */
 public class TeleopSwerve extends CommandBase {
 
-    private double rotation;
-    private Translation2d translation;
     private boolean fieldRelative;
     private boolean openLoop;
-
-    private Swerve s_Swerve;
-    private Joystick controller;
-    private int translationAxis;
-    private int strafeAxis;
-    private int rotationAxis;
-    private Vision vision;
+    private Swerve swerveDrive;
+    private CommandXboxController controller;
 
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Vision vision, Joystick controller, int translationAxis,
-        int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
-        this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
-        this.vision = new Vision();
-
-        this.controller = controller;
-        this.translationAxis = translationAxis;
-        this.strafeAxis = strafeAxis;
-        this.rotationAxis = rotationAxis;
+    public TeleopSwerve(Swerve swerveDrive, CommandXboxController controller, boolean fieldRelative,
+        boolean openLoop) {
+        this.swerveDrive = swerveDrive;
+        addRequirements(swerveDrive);
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
+        this.controller = controller;
     }
 
     @Override
     public void execute() {
-        vision.update();
-        double yAxis = -controller.getRawAxis(translationAxis);
-        double xAxis = -controller.getRawAxis(strafeAxis);
-        double rAxis = -controller.getRawAxis(rotationAxis);
+        double yaxis = -controller.getLeftY();
+        double xaxis = -controller.getLeftX();
+        double raxis = -controller.getRightX();
 
         /* Deadbands */
-        yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
-        xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
-        rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
+        yaxis = (Math.abs(yaxis) < Constants.stickDeadband) ? 0 : yaxis;
+        xaxis = (Math.abs(xaxis) < Constants.stickDeadband) ? 0 : xaxis;
+        raxis = (Math.abs(raxis) < Constants.stickDeadband) ? 0 : raxis;
+        // System.out.println(swerveDrive.getStringYaw());
 
-        // if(controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound()){
-        // rotation = vision.getAimValue();
-        // } else {
-        // rotation = rAxis * Constants.Swerve.maxAngularVelocity;
-        // }
-
-        rotation =
-            (controller.getRawButton(XboxController.Button.kX.value) && vision.getTargetFound())
-                ? vision.getAimValue()
-                : rAxis * Constants.Swerve.maxAngularVelocity;
-
-
-        translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
-        s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
-
+        Translation2d translation =
+            new Translation2d(yaxis, xaxis).times(Constants.Swerve.maxSpeed);
+        double rotation = raxis * Constants.Swerve.maxAngularVelocity;
+        swerveDrive.drive(translation, rotation, fieldRelative, openLoop);
     }
 
 }
