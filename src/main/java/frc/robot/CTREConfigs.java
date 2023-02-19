@@ -8,7 +8,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 
 /**
- * CTRE config constants
+ * Class that contains CTRE motor configs for swerve drive
  */
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig;
@@ -16,7 +16,7 @@ public final class CTREConfigs {
     public CANCoderConfiguration swerveCanCoderConfig;
 
     /**
-     * CTRE config constants
+     * Set all configs
      */
     public CTREConfigs() {
         swerveAngleFXConfig = new TalonFXConfiguration();
@@ -35,6 +35,7 @@ public final class CTREConfigs {
         swerveAngleFXConfig.supplyCurrLimit = angleSupplyLimit;
         swerveAngleFXConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
 
+
         /* Swerve Drive Motor Configuration */
         SupplyCurrentLimitConfiguration driveSupplyLimit = new SupplyCurrentLimitConfiguration(
             Constants.Swerve.driveEnableCurrentLimit, Constants.Swerve.driveContinuousCurrentLimit,
@@ -48,6 +49,7 @@ public final class CTREConfigs {
         swerveDriveFXConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
         swerveDriveFXConfig.openloopRamp = Constants.Swerve.openLoopRamp;
         swerveDriveFXConfig.closedloopRamp = Constants.Swerve.closedLoopRamp;
+
 
         /* Swerve CANCoder Configuration */
         swerveCanCoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
