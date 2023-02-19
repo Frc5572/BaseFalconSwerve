@@ -102,8 +102,8 @@ public class SwerveModule {
 
     /**
      *
-     * 
-     * 
+     *
+     *
      * @param rotationSpeed Drive motor speed (-1 <= value <= 1)
      */
     public void setTurnAngle(double rotationSpeed) {
