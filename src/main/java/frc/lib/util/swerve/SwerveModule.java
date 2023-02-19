@@ -48,6 +48,8 @@ public class SwerveModule {
         driveMotor = new TalonFX(constants.driveMotorID);
         configDriveMotor();
 
+
+
         lastAngle = getState().angle.getDegrees();
     }
 
@@ -59,8 +61,14 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
-        // Custom optimize command, since default WPILib optimize assumes continuous controller
-        // which CTRE is not
+        // Custom optimize
+        // command, since
+        // default WPILib
+        // optimize assumes
+        // continuous
+        // controller which
+        // CTRE is
+        // not
 
         if (isOpenLoop) {
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
@@ -75,15 +83,16 @@ public class SwerveModule {
         double angle =
             (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01))
                 ? lastAngle
-                : desiredState.angle.getDegrees();
-        // Prevent rotating module if speed is less then 1%. Prevents Jittering.
+                : desiredState.angle.getDegrees(); // Prevent rotating module if speed is
+        // less then 1%. Prevents
+        // Jittering.
         angleMotor.set(ControlMode.Position,
             Conversions.degreesToFalcon(angle, Constants.Swerve.angleGearRatio));
         lastAngle = angle;
     }
 
     /**
-     * Reset module to absolute position
+     * 
      */
     private void resetToAbsolute() {
         double absolutePosition = Conversions.degreesToFalcon(
@@ -92,7 +101,6 @@ public class SwerveModule {
     }
 
     /**
-     * Set the turn angle of the module
      *
      * @param rotationSpeed Drive motor speed (-1 <= value <= 1)
      */
@@ -118,7 +126,7 @@ public class SwerveModule {
     }
 
     /**
-     * Configure the angle encoder
+     * Configure the Angle motor CANCoder
      */
     private void configAngleEncoder() {
         angleEncoder.configFactoryDefault();
@@ -126,7 +134,7 @@ public class SwerveModule {
     }
 
     /**
-     * Configure the angle motor
+     * Configure the Angle motor
      */
     private void configAngleMotor() {
         angleMotor.configFactoryDefault();
@@ -137,7 +145,7 @@ public class SwerveModule {
     }
 
     /**
-     * Configure the drive motor
+     * Configure the Drive motor
      */
     private void configDriveMotor() {
         driveMotor.configFactoryDefault();

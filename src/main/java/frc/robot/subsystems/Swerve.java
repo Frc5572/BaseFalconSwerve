@@ -156,8 +156,13 @@ public class Swerve extends SubsystemBase {
      */
     public Rotation2d getYaw() {
         float yaw = gyro.getYaw();
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - yaw)
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
             : Rotation2d.fromDegrees(yaw);
+    }
+
+    public String getStringYaw() {
+        float yaw = gyro.getYaw();
+        return (Constants.Swerve.invertGyro) ? "Yaw: " + (360 - yaw) : "Yaw: " + yaw;
     }
 
     @Override
@@ -229,6 +234,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Field Offset", fieldOffset);
         SmartDashboard.putNumber("Gyro Yaw - Offset", yaw.getDegrees() - fieldOffset);
 
+
         for (SwerveModule mod : swerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder",
                 mod.getCanCoder().getDegrees());
@@ -236,6 +242,8 @@ public class Swerve extends SubsystemBase {
                 mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity",
                 mod.getState().speedMetersPerSecond);
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Position",
+                mod.getPosition().distanceMeters);
         }
     }
 

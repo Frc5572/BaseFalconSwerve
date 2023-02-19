@@ -17,7 +17,11 @@ public class TeleopSwerve extends CommandBase {
     private CommandXboxController controller;
 
     /**
-     * Driver control
+     * Creates an command for driving the swerve drive during tele-op
+     *
+     * @param swerveDrive The instance of the swerve drive subsystem
+     * @param fieldRelative Whether the movement is relative to the field or absolute
+     * @param openLoop Open or closed loop system
      */
     public TeleopSwerve(Swerve swerveDrive, CommandXboxController controller, boolean fieldRelative,
         boolean openLoop) {
@@ -45,5 +49,4 @@ public class TeleopSwerve extends CommandBase {
         double rotation = raxis * Constants.Swerve.maxAngularVelocity;
         swerveDrive.drive(translation, rotation, fieldRelative, openLoop);
     }
-
 }

@@ -1,14 +1,14 @@
 package frc.lib.math;
 
 /**
- * Necessary conversions for our robot
+ * Mathematical conversions for swerve calculations
  */
 public class Conversions {
 
     /**
      * @param counts Falcon Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Degrees of Rotation of Mechanism
+     * @return Degrees of Rotation of Mechanism falconToDegrees
      */
     public static double falconToDegrees(double counts, double gearRatio) {
         return counts * (360.0 / (gearRatio * 2048.0));
@@ -17,7 +17,7 @@ public class Conversions {
     /**
      * @param degrees Degrees of rotation of Mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Falcon Counts
+     * @return Falcon Counts degreesToFalcon
      */
     public static double degreesToFalcon(double degrees, double gearRatio) {
         double ticks = degrees / (360.0 / (gearRatio * 2048.0));
@@ -27,7 +27,7 @@ public class Conversions {
     /**
      * @param velocityCounts Falcon Velocity Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return RPM of Mechanism
+     * @return rpm of Mechanism
      */
     public static double falconToRPM(double velocityCounts, double gearRatio) {
         double motorRPM = velocityCounts * (600.0 / 2048.0);
@@ -36,12 +36,12 @@ public class Conversions {
     }
 
     /**
-     * @param RPM RPM of mechanism
+     * @param rpm RPM of mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return RPM of Mechanism
+     * @return rpm of Mechanism
      */
-    public static double rpmToFalcon(double RPM, double gearRatio) {
-        double motorRPM = RPM * gearRatio;
+    public static double rpmToFalcon(double rpm, double gearRatio) {
+        double motorRPM = rpm * gearRatio;
         double sensorCounts = motorRPM * (2048.0 / 600.0);
         return sensorCounts;
     }
