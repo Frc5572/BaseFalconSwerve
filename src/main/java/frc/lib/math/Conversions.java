@@ -27,7 +27,7 @@ public class Conversions {
     /**
      * @param velocityCounts Falcon Velocity Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return rpm of Mechanism
+     * @return RPM of Mechanism
      */
     public static double falconToRPM(double velocityCounts, double gearRatio) {
         double motorRPM = velocityCounts * (600.0 / 2048.0);
@@ -38,7 +38,7 @@ public class Conversions {
     /**
      * @param rpm RPM of mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return rpm of Mechanism
+     * @return RPM of Mechanism
      */
     public static double rpmToFalcon(double rpm, double gearRatio) {
         double motorRPM = rpm * gearRatio;
