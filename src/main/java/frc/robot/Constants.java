@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -96,6 +97,9 @@ public final class Constants {
         public static final double angleKD = 12.0;
         public static final double angleKF = 0.0;
 
+        public static final double angleMotorEncoderPositionPIDMinInput = 0;
+        public static final double angleMotorEncoderPositionPIDMaxInput = 360;
+
         /* Drive Motor PID Values */
         public static final double driveKP = 0.10;
         public static final double driveKI = 0.0;
@@ -113,7 +117,9 @@ public final class Constants {
         public static final double maxAngularVelocity = 2;
 
         /* Neutral Modes */
-        public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+        // public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+        public static final IdleMode angleNeutralMode = IdleMode.kCoast;
+
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
         /* Motor Inverts */
