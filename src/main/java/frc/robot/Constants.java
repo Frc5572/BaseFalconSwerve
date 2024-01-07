@@ -72,7 +72,7 @@ public final class Constants {
         public static final double closedLoopRamp = 0.4;
 
         public static final double driveGearRatio = (8.14 / 1.0); // 8.14:1
-        public static final double angleGearRatio = (12.8 / 1.0); // 12.8:1
+        public static final double angleGearRatio = ((150 / 7) / 1.0); // 12.8:1
 
         public static final SwerveDriveKinematics swerveKinematics =
             new SwerveDriveKinematics(new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -92,13 +92,14 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.6;
+        public static final double angleKP = 0.0;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 12.0;
+        public static final double angleKD = 0.0;
         public static final double angleKF = 0.0;
 
         public static final double angleMotorEncoderPositionPIDMinInput = 0;
         public static final double angleMotorEncoderPositionPIDMaxInput = 360;
+        public static final double turningDegreesPerEncoderRevolution = 360 / angleGearRatio;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 0.10;

@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +27,7 @@ public class SwerveModule {
     private CANSparkMax angleMotor;
     private TalonFX driveMotor;
     private CANCoder angleEncoder;
+    private RelativeEncoder angleEncoderBuiltIn;
     private double lastAngle;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS,
         Constants.Swerve.driveKV, Constants.Swerve.driveKA);
@@ -54,7 +56,11 @@ public class SwerveModule {
         driveMotor = new TalonFX(constants.driveMotorID);
         configDriveMotor();
 
-
+        angleEncoderBuiltIn = angleMotor.getEncoder();
+        angleEncoderBuiltIn
+            .setPositionConversionFactor(Constants.Swerve.turningDegreesPerEncoderRevolution);
+        angleEncoderBuiltIn
+            .setVelocityConversionFactor(Constants.Swerve.turningDegreesPerEncoderRevolution / 60);
 
         lastAngle = getState().angle.getDegrees();
     }
@@ -107,7 +113,7 @@ public class SwerveModule {
         // getCanCoder().getDegrees() - angleOffset, Constants.Swerve.angleGearRatio);
 
         double absolutePosition = getCanCoder().getDegrees() - angleOffset;
-        angleMotor.setSelectedSensorPosition(absolutePosition);
+        angleEncoderBuiltIn.setPosition(absolutePosition);
     }
 
     // /**
@@ -131,8 +137,7 @@ public class SwerveModule {
         double position = Conversions.falconToMeters(driveMotor.getSelectedSensorPosition(),
             Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
 
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(
-            angleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
+        Rotation2d angle = Rotation2d.fromDegrees(angleEncoderBuiltIn.getPosition());
         return new SwerveModulePosition(position, angle);
     }
 
@@ -191,7 +196,7 @@ public class SwerveModule {
     public SwerveModuleState getState() {
         double velocity = Conversions.falconToMPS(driveMotor.getSelectedSensorVelocity(),
             Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-        Rotation2d angle = Rotation2d.fromDegrees(angleMotor.);
+        Rotation2d angle = Rotation2d.fromDegrees(angleEncoderBuiltIn.getPosition());
         return new SwerveModuleState(velocity, angle);
     }
 
