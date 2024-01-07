@@ -13,8 +13,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
-import frc.lib.util.ctre.CTREModuleState;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -29,6 +29,7 @@ public class SwerveModule {
     private CANCoder angleEncoder;
     private RelativeEncoder angleEncoderBuiltIn;
     private double lastAngle;
+    private double absolutePosition;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS,
         Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
@@ -72,7 +73,7 @@ public class SwerveModule {
      * @param isOpenLoop Whether to use open or closed loop formula
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        desiredState = CTREModuleState.optimize(desiredState, getState().angle);
+        // desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         // Custom optimize
         // command, since
         // default WPILib
@@ -95,11 +96,20 @@ public class SwerveModule {
         double angle =
             (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01))
                 ? lastAngle
-                : desiredState.angle.getDegrees(); // Prevent rotating module if speed is
+                : (desiredState.angle.getDegrees()); // Prevent
+        // rotating
+        // module if speed is
         // less then 1%. Prevents
         // Jittering.
         // angleMotor.set(ControlMode.Position,
         // Conversions.degreesToFalcon(angle, Constants.Swerve.angleGearRatio));
+
+        SmartDashboard.putNumber("Mod" + moduleNumber + "PID Setpoint",
+            desiredState.angle.getDegrees());
+
+        SmartDashboard.putNumber("Mod" + moduleNumber + "Diff",
+            desiredState.angle.minus(getCanCoder()).getDegrees());
+
 
         angleMotorPIDController.setReference(angle, ControlType.kPosition);
         lastAngle = angle;
@@ -111,9 +121,10 @@ public class SwerveModule {
     private void resetToAbsolute() {
         // double absolutePosition = Conversions.degreesToFalcon(
         // getCanCoder().getDegrees() - angleOffset, Constants.Swerve.angleGearRatio);
-
-        double absolutePosition = getCanCoder().getDegrees() - angleOffset;
-        angleEncoderBuiltIn.setPosition(absolutePosition);
+        // angleEncoderBuiltIn.setPosition(0);
+        absolutePosition = getCanCoder().getDegrees() - angleOffset;
+        SmartDashboard.putString("Mod: " + moduleNumber + "SparkMax Status",
+            "" + angleEncoderBuiltIn.setPosition(absolutePosition));
     }
 
     // /**
@@ -137,7 +148,8 @@ public class SwerveModule {
         double position = Conversions.falconToMeters(driveMotor.getSelectedSensorPosition(),
             Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
 
-        Rotation2d angle = Rotation2d.fromDegrees(angleEncoderBuiltIn.getPosition());
+        Rotation2d angle =
+            Rotation2d.fromDegrees(angleEncoderBuiltIn.getPosition() - absolutePosition);
         return new SwerveModulePosition(position, angle);
     }
 
@@ -157,11 +169,11 @@ public class SwerveModule {
         // angleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
         angleMotor.setInverted(Constants.Swerve.angleMotorInvert);
         angleMotor.setIdleMode(Constants.Swerve.angleNeutralMode);
-        angleMotorPIDController.setPositionPIDWrappingEnabled(true);
-        angleMotorPIDController
-            .setPositionPIDWrappingMinInput(Constants.Swerve.angleMotorEncoderPositionPIDMinInput);
-        angleMotorPIDController
-            .setPositionPIDWrappingMaxInput(Constants.Swerve.angleMotorEncoderPositionPIDMaxInput);
+        angleMotorPIDController.setPositionPIDWrappingEnabled(false);
+        // angleMotorPIDController
+        // .setPositionPIDWrappingMinInput(Constants.Swerve.angleMotorEncoderPositionPIDMinInput);
+        // angleMotorPIDController
+        // .setPositionPIDWrappingMaxInput(Constants.Swerve.angleMotorEncoderPositionPIDMaxInput);
         angleMotorPIDController.setP(Constants.Swerve.angleKP);
         angleMotorPIDController.setI(Constants.Swerve.angleKI);
         angleMotorPIDController.setD(Constants.Swerve.angleKD);
