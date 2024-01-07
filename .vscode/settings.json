@@ -34,7 +34,7 @@
     "editor.defaultFormatter": "redhat.java",
   },
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    "source.organizeImports": "explicit"
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,

@@ -32,7 +32,7 @@ public class SwerveModule {
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS,
         Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
-    SparkMaxPIDController angleMotorPIDController = angleMotor.getPIDController();
+    SparkMaxPIDController angleMotorPIDController;
 
     /**
      * Creates an instance of a Swerve Module
@@ -50,13 +50,13 @@ public class SwerveModule {
 
         /* Angle Motor Config */
         angleMotor = new CANSparkMax(constants.angleMotorID, MotorType.kBrushless);
+        angleMotorPIDController = angleMotor.getPIDController();
+        angleEncoderBuiltIn = angleMotor.getEncoder();
         configAngleMotor();
 
         /* Drive Motor Config */
         driveMotor = new TalonFX(constants.driveMotorID);
         configDriveMotor();
-
-        angleEncoderBuiltIn = angleMotor.getEncoder();
         angleEncoderBuiltIn
             .setPositionConversionFactor(Constants.Swerve.turningDegreesPerEncoderRevolution);
         angleEncoderBuiltIn
