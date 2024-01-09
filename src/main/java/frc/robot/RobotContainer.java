@@ -51,6 +51,7 @@ public class RobotContainer {
         // driver.x().whileTrue(new TestTransform(s_Swerve,
         // new Transform2d(new Translation2d(1, 0), Rotation2d.fromDegrees(180)), 7));
         driver.a().whileTrue(new InstantCommand(() -> s_Swerve.resetInitialized()));
+        driver.x().whileTrue(new InstantCommand(() -> s_Swerve.resetModuleEncoders()));
     }
 
     /**
