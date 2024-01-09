@@ -104,7 +104,7 @@ public final class Constants {
 
         public static final double angleMotorEncoderPositionPIDMinInput = 0;
         public static final double angleMotorEncoderPositionPIDMaxInput = 360;
-        public static final double turningDegreesPerEncoderRevolution = 360 / angleGearRatio;
+        public static final double turningDegreesPerEncoderRevolution = 360.0;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 0.10;
@@ -129,7 +129,7 @@ public final class Constants {
         public static final NeutralMode driveNeutralMode = NeutralMode.Coast;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = true;
+        public static final boolean driveMotorInvert = false;
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
