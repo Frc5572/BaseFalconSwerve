@@ -8,6 +8,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -26,23 +27,26 @@ public class Swerve extends SubsystemBase {
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
     public SwerveDrivePoseEstimator swerveOdometry;
     private PhotonCamera cam = new PhotonCamera(Constants.CameraConstants.cameraName);
-    public SwerveModule[] swerveMods;
+    public SwerveModule[] swerveMods = new SwerveModule[4];
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
     private final Field2d field = new Field2d();
     private boolean hasInitialized = false;
 
+    private SwerveIO io;
+    private SwerveInputsAutoLogged inputs = new SwerveInputsAutoLogged();
+
     /**
      * Initializes swerve modules.
      */
-    public Swerve() {
+    public Swerve(SwerveIO io) {
+        this.io = io;
         SmartDashboard.putData("Field Pos", field);
 
-
-        swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)};
+        for (int i = 0; i < 4; i++) {
+            swerveMods[i] = io.createSwerveModule(i, Constants.Swerve.swerveConstants[i]);
+        }
+        io.updateInputs(inputs);
 
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
             getPositions(), new Pose2d());
@@ -58,6 +62,35 @@ public class Swerve extends SubsystemBase {
         swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
             false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
+    }
+
+    /**
+     * Moves the swerve drive train, creates twist2d that accounts for the fact that positions are
+     * not updated continuously, (updated every .02 seconds.)
+     *
+     * @param translation The 2d translation in the X-Y plane
+     * @param rotation The amount of rotation in the Z axis
+     * @param fieldRelative Whether the movement is relative to the field or absolute
+     * @param isOpenLoop Open or closed loop system
+     */
+    public void driveWithTwist(Translation2d translation, double rotation, boolean fieldRelative,
+        boolean isOpenLoop) {
+
+        double dt = Constants.kDefaultPeriod;
+
+        ChassisSpeeds chassisSpeeds = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
+                rotation, getFieldRelativeHeading())
+            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+
+        Pose2d robot_pose_vel =
+            new Pose2d(chassisSpeeds.vxMetersPerSecond * dt, chassisSpeeds.vyMetersPerSecond * dt,
+                Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * dt));
+        Twist2d twist_vel = new Pose2d().log(robot_pose_vel);
+        ChassisSpeeds updated =
+            new ChassisSpeeds(twist_vel.dx / dt, twist_vel.dy / dt, twist_vel.dtheta / dt);
+
+        setModuleStates(updated);
     }
 
     /**
@@ -151,11 +184,15 @@ public class Swerve extends SubsystemBase {
         fieldOffset = getYaw().getDegrees();
     }
 
+    public Rotation2d getFieldRelativeHeading() {
+        return Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset);
+    }
+
     /**
      * Gets the rotation degree from swerve modules.
      */
     public Rotation2d getYaw() {
-        float yaw = gyro.getYaw();
+        float yaw = inputs.yaw;
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
             : Rotation2d.fromDegrees(yaw);
     }

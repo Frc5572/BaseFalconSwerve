@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.SwerveIO;
 
 /**
  * Zeros motors then executes normal wait command.
@@ -19,10 +20,10 @@ public class ZeroMotorsWaitCommand extends CommandBase {
      *
      * @param seconds how long the wait command should run
      */
-    public ZeroMotorsWaitCommand(double seconds) {
+    public ZeroMotorsWaitCommand(SwerveIO swerveIO, double seconds) {
         this.m_duration = seconds;
         SendableRegistry.setName(this, getName() + ": " + seconds + " seconds");
-        this.s_Swerve = new Swerve();
+        this.s_Swerve = new Swerve(swerveIO);
     }
 
     @Override

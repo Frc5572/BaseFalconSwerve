@@ -16,6 +16,8 @@ import frc.lib.util.swerve.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    public static final double kDefaultPeriod = 0.02;
+
     /**
      * PID constants for Swerve Auto Holonomic Drive Controller
      */
@@ -171,6 +173,9 @@ public final class Constants {
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
+
+        public static final SwerveModuleConstants[] swerveConstants =
+            {Mod0.constants, Mod1.constants, Mod2.constants, Mod3.constants};
 
     }
 
