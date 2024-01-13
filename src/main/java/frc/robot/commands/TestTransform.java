@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.FieldConstants;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -16,7 +16,7 @@ import frc.robot.subsystems.Swerve;
 /**
  * Test April tag transform
  */
-public class TestTransform extends CommandBase {
+public class TestTransform extends Command {
 
     private Swerve swerve;
     private Transform2d transform2d;

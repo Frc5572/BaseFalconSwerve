@@ -24,6 +24,10 @@ public class Conversions {
         return ticks;
     }
 
+    public static double degreesToFalconRotation(double degrees, double gearRatio) {
+        return degrees / (360.0 / gearRatio);
+    }
+
     /**
      * @param velocityCounts Falcon Velocity Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
@@ -78,6 +82,11 @@ public class Conversions {
         double wheelRPM = ((velocity * 60) / circumference);
         double wheelVelocity = rpmToFalcon(wheelRPM, gearRatio);
         return wheelVelocity;
+    }
+
+    public static double mpsToFalconRotations(double velocity, double circumference,
+        double gearRatio) {
+        return (velocity / circumference) * gearRatio;
     }
 
     /**
