@@ -32,8 +32,8 @@ public class Conversions {
     /**
      * Convert from Degrees to rotations of the motor
      *
-     * @param degrees
-     * @param gearRatio
+     * @param degrees Degrees
+     * @param gearRatio Gear Ratio between sensor and mechanism
      * @return Number of rotations of the motor encoder
      */
     public static double degreesToRotation(double degrees, double gearRatio) {
