@@ -20,6 +20,8 @@
 *.dylib
 *.dll
 
+src/main/java/frc/robot/BuildConstants.java
+
 # Fortran module files
 *.mod
 *.smod

@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.util.ctre.CTREConfigs;
@@ -15,7 +15,7 @@ import frc.lib.util.ctre.CTREConfigs;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
     public static CTREConfigs ctreConfigs;
 
     private Command m_autonomousCommand;
@@ -29,6 +29,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+
+
+        // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the
+        // "Understanding Data Flow" page // may be added.
         ctreConfigs = new CTREConfigs();
         // Instantiate our RobotContainer. This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.

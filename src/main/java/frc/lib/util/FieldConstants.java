@@ -25,15 +25,11 @@ package frc.lib.util;
 
 import java.util.Map;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * Field Constants
@@ -244,13 +240,13 @@ public class FieldConstants {
      * default, all translations and poses in {@link FieldConstants} are stored with the origin at
      * the rightmost point on the BLUE ALLIANCE wall.
      */
-    public static Translation2d allianceFlip(Translation2d translation) {
-        if (DriverStation.getAlliance() == Alliance.Red) {
-            return new Translation2d(fieldLength - translation.getX(), translation.getY());
-        } else {
-            return translation;
-        }
-    }
+    // public static Translation2d allianceFlip(Translation2d translation) {
+    // if (DriverStation.getAlliance() == Alliance.Red) {
+    // return new Translation2d(fieldLength - translation.getX(), translation.getY());
+    // } else {
+    // return translation;
+    // }
+    // }
 
     /**
      * Flips a pose to the correct side of the field based on the current alliance color. By
@@ -260,14 +256,14 @@ public class FieldConstants {
      * @param pose Initial Pose
      * @return Pose2d flipped to Red Alliance
      */
-    public static Pose2d allianceFlip(Pose2d pose) {
-        if (DriverStation.getAlliance() == Alliance.Red) {
-            return new Pose2d(fieldLength - pose.getX(), pose.getY(),
-                new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
-        } else {
-            return pose;
-        }
-    }
+    // public static Pose2d allianceFlip(Pose2d pose) {
+    // if (DriverStation.getAlliance() == Alliance.Red) {
+    // return new Pose2d(fieldLength - pose.getX(), pose.getY(),
+    // new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
+    // } else {
+    // return pose;
+    // }
+    // }
 
     /**
      * elementwise maximum

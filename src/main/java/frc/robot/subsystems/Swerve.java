@@ -5,10 +5,12 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -54,6 +56,35 @@ public class Swerve extends SubsystemBase {
         swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
             false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
+    }
+
+    /**
+     * Moves the swerve drive train, creates twist2d that accounts for the fact that positions are
+     * not updated continuously, (updated every .02 seconds.)
+     *
+     * @param translation The 2d translation in the X-Y plane
+     * @param rotation The amount of rotation in the Z axis
+     * @param fieldRelative Whether the movement is relative to the field or absolute
+     * @param isOpenLoop Open or closed loop system
+     */
+    public void driveWithTwist(Translation2d translation, double rotation, boolean fieldRelative,
+        boolean isOpenLoop) {
+
+        double dt = TimedRobot.kDefaultPeriod;
+
+        ChassisSpeeds chassisSpeeds = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
+                rotation, getFieldRelativeHeading())
+            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+
+        Pose2d robot_pose_vel =
+            new Pose2d(chassisSpeeds.vxMetersPerSecond * dt, chassisSpeeds.vyMetersPerSecond * dt,
+                Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * dt));
+        Twist2d twist_vel = new Pose2d().log(robot_pose_vel);
+        ChassisSpeeds updated =
+            new ChassisSpeeds(twist_vel.dx / dt, twist_vel.dy / dt, twist_vel.dtheta / dt);
+
+        setModuleStates(updated);
     }
 
     /**
@@ -145,6 +176,10 @@ public class Swerve extends SubsystemBase {
     public void resetFieldRelativeOffset() {
         // gyro.zeroYaw();
         fieldOffset = getYaw().getDegrees();
+    }
+
+    public Rotation2d getFieldRelativeHeading() {
+        return Rotation2d.fromDegrees(getYaw().getDegrees() - fieldOffset);
     }
 
     /**
