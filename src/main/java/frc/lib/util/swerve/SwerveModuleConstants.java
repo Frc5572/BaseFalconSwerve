@@ -15,7 +15,7 @@ public class SwerveModuleConstants {
      * @param driveMotorID ID of the drive motor
      * @param angleMotorID ID of the angle motor
      * @param canCoderID ID of the canCoder
-     * @param angleOffset offset of the canCoder angle
+     * @param angleOffset offset of the canCoder angle in rotations [0, 1]
      */
     public SwerveModuleConstants(int driveMotorID, int angleMotorID, int canCoderID,
         double angleOffset) {
