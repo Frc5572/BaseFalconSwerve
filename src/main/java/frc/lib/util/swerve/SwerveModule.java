@@ -78,6 +78,7 @@ public class SwerveModule {
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
             driveMotor.setControl(drivePower.withOutput(percentOutput));
         } else {
+            // See Line 186, swerveDriveFXConfig.Feedback.SensorToMechanismRatio
             double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
                 Constants.Swerve.wheelCircumference, 1);
             driveMotor.setControl(driveSpeed.withVelocity(velocity));
