@@ -6,74 +6,77 @@ package frc.lib.math;
 public class Conversions {
 
     /**
-     * Convert from motor encoder rotations to Meters
-     *
-     * @param rotations Rotations of motor encoder
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @param circumference The circumference of the Wheels
-     * @return Degrees of Rotation of Mechanism falconToDegrees
+     * @param falconRotations Falcon rotations
+     * @param gearRatio gear ratio between Falcon and mechanism
+     * @return degrees of rotation of mechanism
      */
-    public static double rotationsToMeters(double rotations, double gearRatio,
-        double circumference) {
-        return rotations * circumference / gearRatio;
+    public static double falconRotationsToMechanismDegrees(double falconRotations,
+        double gearRatio) {
+        return falconRotations * 360.0 / gearRatio;
     }
 
     /**
-     * Convert from Motor Encoder rotations to degrees
-     *
-     * @param rotations Rotations of motor encoder
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Degrees of Rotation of Mechanism falconToDegrees
+     * @param degrees Degrees of rotation of mechanism
+     * @param gearRatio gear ratio between Falcon and mechanism
+     * @return Falcon rotations
      */
-    public static double rotationToDegrees(double rotations, double gearRatio) {
-        return rotations * (360.0 / gearRatio);
+    public static double degreesToFalconRotations(double degrees, double gearRatio) {
+        return (degrees / 360.0) * gearRatio;
     }
 
     /**
-     * Convert from Degrees to rotations of the motor
-     *
-     * @param degrees Degrees
-     * @param gearRatio Gear Ratio between sensor and mechanism
-     * @return Number of rotations of the motor encoder
+     * @param rps Falcon rotations per second
+     * @param gearRatio gear ratio between Falcon and mechanism (set to 1 for Falcon RPM)
+     * @return RPM of mechanism
      */
-    public static double degreesToRotation(double degrees, double gearRatio) {
-        return degrees / (360.0 / gearRatio);
+    public static double falconRPSToMechanismRPM(double falconRPS, double gearRatio) {
+        double motorRPM = falconRPS * 60.0;
+        return motorRPM / gearRatio;
     }
 
     /**
-     * Meters per Second to Motor Encoder Rotations
-     *
-     * @param velocity Current veloctiy in Meters per Second
-     * @param circumference Circumference of the wheels
-     * @param gearRatio Gear ration between Falcon and Mechanism
-     * @return Number of rotations
+     * @param RPM RPM of mechanism
+     * @param gearRatio Gear ratio between Falcon and mechanism (set to 1 for Falcon RPS)
+     * @return Falcon rotations per second
      */
-    public static double mpsToRotations(double velocity, double circumference, double gearRatio) {
-        return (velocity / circumference) * gearRatio;
+    public static double rpmToFalconRPS(double rpm, double gearRatio) {
+        double motorRPM = rpm * gearRatio;
+        return motorRPM / 60.0;
     }
 
     /**
-     * Motor Encoder Rotations to Meters per Second
-     *
-     * @param rps Motor Encoder Rotations per Second
-     * @param circumference Circumference of the wheels
-     * @param gearRatio Gear ration between Falcon and Mechanism
-     * @return Velocity in Meters per Second
+     * @param falconRotations Falcon rotations
+     * @param circumference circumference of wheel
+     * @param gearRatio gear ratio between Falcon and mechanism
+     * @return linear distance traveled by wheel in meters
      */
-    public static double rpsToMPS(double rps, double circumference, double gearRatio) {
-        double wheelRPS = rps / gearRatio;
-        double wheelMPS = (wheelRPS * circumference);
-        return wheelMPS;
+    public static double falconRotationsToMechanismMeters(double falconRotations,
+        double circumference, double gearRatio) {
+        double wheelRotations = falconRotations / gearRatio;
+        return (wheelRotations * circumference);
     }
 
     /**
-     * Normalize angle to between 0 to 360
-     *
-     * @param goal initial angle
-     * @return normalized angle
+     * @param falconRPS Falcon rotations per second
+     * @param circumference circumference of wheel
+     * @param gearRatio gear ratio between Falcon and mechanism
+     * @return mechanism linear velocity in meters per second
      */
-    public static double reduceTo0_360(double goal) {
-        return goal % 360;
+    public static double falconRPSToMechanismMPS(double falconRPS, double circumference,
+        double gearRatio) {
+        double wheelRPM = falconRPSToMechanismRPM(falconRPS, gearRatio);
+        return (wheelRPM * circumference) / 60;
+    }
+
+    /**
+     * @param velocity velocity in meters per second
+     * @param circumference circumference of wheel
+     * @param gearRatio gear ratio between Falcon and mechanism
+     * @return Falcon rotations per second
+     */
+    public static double mpsToFalconRPS(double velocity, double circumference, double gearRatio) {
+        double wheelRPM = ((velocity * 60) / circumference);
+        return rpmToFalconRPS(wheelRPM, gearRatio);
     }
 
 }

@@ -1,22 +1,20 @@
 package frc.lib.util.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
 import frc.lib.util.ctre.CTREModuleState;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 /**
  * Base Swerve Module Class. Creates an instance of the swerve module
@@ -28,11 +26,15 @@ public class SwerveModule {
     private TalonFX driveMotor;
     private CANcoder angleEncoder;
     private double lastAngle;
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS,
-        Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+    private TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
+    private TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
+    private CANcoderConfiguration swerveCanCoderConfig = new CANcoderConfiguration();
     private DutyCycleOut drivePower = new DutyCycleOut(0);
-    private VelocityVoltage driveSpeed = new VelocityVoltage(0);
-    private PositionDutyCycle angleMotorPosition = new PositionDutyCycle(0);
+    private VelocityDutyCycle driveSpeed = new VelocityDutyCycle(0).withSlot(0);
+    private PositionDutyCycle angleMotorPosition = new PositionDutyCycle(0).withSlot(0);
+    // Use Voltage to turn Voltage Compensation on
+    // private VelocityVoltage driveSpeed = new VelocityVoltage(0).withSlot(0);
+    // private PositionVoltage angleMotorPosition = new PositionVoltage(0).withSlot(0);
 
     /**
      * Creates an instance of a Swerve Module
@@ -45,15 +47,15 @@ public class SwerveModule {
         angleOffset = constants.angleOffset;
 
         /* Angle Encoder Config */
-        angleEncoder = new CANcoder(constants.cancoderID);
+        angleEncoder = new CANcoder(constants.cancoderID, Constants.Swerve.canBus);
         configAngleEncoder();
 
         /* Angle Motor Config */
-        angleMotor = new TalonFX(constants.angleMotorID);
+        angleMotor = new TalonFX(constants.angleMotorID, Constants.Swerve.canBus);
         configAngleMotor();
 
         /* Drive Motor Config */
-        driveMotor = new TalonFX(constants.driveMotorID);
+        driveMotor = new TalonFX(constants.driveMotorID, Constants.Swerve.canBus);
         configDriveMotor();
 
 
@@ -69,34 +71,27 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
-        // Custom optimize
-        // command, since
-        // default WPILib
-        // optimize assumes
-        // continuous
-        // controller which
-        // CTRE is
-        // not
+        // Custom optimize command, since default WPILib optimize assumes
+        // continuous controller which CTRE is not
 
         if (isOpenLoop) {
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
             driveMotor.setControl(drivePower.withOutput(percentOutput));
         } else {
-            double velocity = Conversions.mpsToRotations(desiredState.speedMetersPerSecond,
-                Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-            driveMotor.setControl(driveSpeed.withVelocity(velocity)
-                .withFeedForward(feedforward.calculate(desiredState.speedMetersPerSecond)));
-
+            double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
+                Constants.Swerve.wheelCircumference, 1);
+            driveMotor.setControl(driveSpeed.withVelocity(velocity));
         }
 
+        // Prevent rotating module if speed is less then 1%. Prevents Jittering.
         double angle =
             (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01))
                 ? lastAngle
-                : desiredState.angle.getDegrees(); // Prevent rotating module if speed is
-        // less then 1%. Prevents
-        // Jittering.
-        angleMotor.setControl(angleMotorPosition
-            .withPosition(Conversions.degreesToRotation(angle, Constants.Swerve.angleGearRatio)));
+                : desiredState.angle.getDegrees();
+
+        // See Line 163, swerveAngleFXConfig.Feedback.SensorToMechanismRatio
+        angleMotor.setControl(
+            angleMotorPosition.withPosition(Conversions.degreesToFalconRotations(angle, 1)));
         lastAngle = angle;
     }
 
@@ -105,9 +100,8 @@ public class SwerveModule {
      */
     private void resetToAbsolute() {
         double absolutePosition = getCanCoderRaw() / Constants.Swerve.angleGearRatio;
-        FeedbackConfigs feedbackConfigs = Robot.ctreConfigs.swerveAngleFXConfig.Feedback
-            .withFeedbackRotorOffset(absolutePosition);
-        angleMotor.getConfigurator().apply(feedbackConfigs);
+        swerveAngleFXConfig.Feedback.FeedbackRotorOffset = absolutePosition;
+        angleMotor.getConfigurator().apply(swerveAngleFXConfig);
     }
 
     /**
@@ -116,15 +110,11 @@ public class SwerveModule {
      * @return Swerve module position
      */
     public SwerveModulePosition getPosition() {
+        double position = Conversions.falconRotationsToMechanismMeters(
+            driveMotor.getPosition().getValueAsDouble(), Constants.Swerve.wheelCircumference, 1);
 
-
-
-        double position =
-            Conversions.rotationsToMeters(driveMotor.getRotorPosition().getValueAsDouble(),
-                Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
-
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.rotationToDegrees(
-            angleMotor.getRotorPosition().getValueAsDouble(), Constants.Swerve.angleGearRatio));
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions
+            .falconRotationsToMechanismDegrees(angleMotor.getPosition().getValueAsDouble(), 1));
         return new SwerveModulePosition(position, angle);
     }
 
@@ -133,10 +123,13 @@ public class SwerveModule {
      */
     private void configAngleEncoder() {
         angleEncoder.getConfigurator().apply(new CANcoderConfiguration());
-        MagnetSensorConfigs canCoderConfiguration =
-            Robot.ctreConfigs.swerveCanCoderConfig.MagnetSensor;
-        canCoderConfiguration.MagnetOffset = angleOffset;
-        angleEncoder.getConfigurator().apply(canCoderConfiguration);
+        swerveCanCoderConfig.MagnetSensor.SensorDirection =
+            Constants.Swerve.canCoderInvert ? SensorDirectionValue.Clockwise_Positive
+                : SensorDirectionValue.CounterClockwise_Positive;
+        swerveCanCoderConfig.MagnetSensor.AbsoluteSensorRange =
+            AbsoluteSensorRangeValue.Unsigned_0To1;
+        swerveCanCoderConfig.MagnetSensor.MagnetOffset = angleOffset;
+        angleEncoder.getConfigurator().apply(swerveCanCoderConfig);
     }
 
     /**
@@ -144,7 +137,23 @@ public class SwerveModule {
      */
     private void configAngleMotor() {
         angleMotor.getConfigurator().apply(new TalonFXConfiguration());
-        angleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
+        swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimitEnable =
+            Constants.Swerve.angleEnableCurrentLimit;
+        swerveAngleFXConfig.CurrentLimits.SupplyCurrentThreshold =
+            Constants.Swerve.anglePeakCurrentLimit;
+        swerveAngleFXConfig.CurrentLimits.SupplyTimeThreshold =
+            Constants.Swerve.anglePeakCurrentDuration;
+        swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimit =
+            Constants.Swerve.angleContinuousCurrentLimit;
+        swerveAngleFXConfig.Feedback.FeedbackRotorOffset = 0;
+        swerveAngleFXConfig.Slot0.kP = Constants.Swerve.angleKP;
+        swerveAngleFXConfig.Slot0.kI = Constants.Swerve.angleKI;
+        swerveAngleFXConfig.Slot0.kD = Constants.Swerve.angleKD;
+        // swerveAngleFXConfig.Slot0.kS = 0;
+        // swerveAngleFXConfig.Slot0.kV = 0;
+        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.angleGearRatio;
+        // swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
+        angleMotor.getConfigurator().apply(swerveAngleFXConfig);
         angleMotor.setInverted(Constants.Swerve.angleMotorInvert);
         angleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
         resetToAbsolute();
@@ -155,7 +164,26 @@ public class SwerveModule {
      */
     private void configDriveMotor() {
         driveMotor.getConfigurator().apply(new TalonFXConfiguration());
-        driveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
+        swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimitEnable =
+            Constants.Swerve.driveEnableCurrentLimit;
+        swerveDriveFXConfig.CurrentLimits.SupplyCurrentThreshold =
+            Constants.Swerve.drivePeakCurrentLimit;
+        swerveDriveFXConfig.CurrentLimits.SupplyTimeThreshold =
+            Constants.Swerve.drivePeakCurrentDuration;
+        swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimit =
+            Constants.Swerve.driveContinuousCurrentLimit;
+        swerveDriveFXConfig.Feedback.FeedbackRotorOffset = 0;
+        swerveDriveFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Swerve.openLoopRamp;
+        swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
+            Constants.Swerve.closedLoopRamp;
+        swerveDriveFXConfig.Slot0.kP = Constants.Swerve.driveKP;
+        swerveDriveFXConfig.Slot0.kI = Constants.Swerve.driveKI;
+        swerveDriveFXConfig.Slot0.kD = Constants.Swerve.driveKD;
+        swerveDriveFXConfig.Slot0.kS = Constants.Swerve.driveKS;
+        swerveDriveFXConfig.Slot0.kV = Constants.Swerve.driveKV;
+        swerveDriveFXConfig.Slot0.kA = Constants.Swerve.driveKA;
+        swerveDriveFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.driveGearRatio;
+        driveMotor.getConfigurator().apply(swerveDriveFXConfig);
         driveMotor.setInverted(Constants.Swerve.driveMotorInvert);
         driveMotor.setNeutralMode(Constants.Swerve.driveNeutralMode);
     }
@@ -175,8 +203,8 @@ public class SwerveModule {
      * @return 2d rotation of the module
      */
     public Rotation2d getCanCoder() {
-        return Rotation2d.fromDegrees(
-            Conversions.rotationToDegrees(getCanCoderRaw(), Constants.Swerve.angleGearRatio));
+        return Rotation2d.fromDegrees(Conversions
+            .falconRotationsToMechanismDegrees(getCanCoderRaw(), Constants.Swerve.angleGearRatio));
     }
 
     /**
@@ -185,10 +213,10 @@ public class SwerveModule {
      * @return Swerve module state
      */
     public SwerveModuleState getState() {
-        double velocity = Conversions.rpsToMPS(driveMotor.getRotorVelocity().getValueAsDouble(),
-            Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.rotationToDegrees(
-            angleMotor.getRotorPosition().getValueAsDouble(), Constants.Swerve.angleGearRatio));
+        double velocity = Conversions.falconRPSToMechanismMPS(
+            driveMotor.getVelocity().getValueAsDouble(), Constants.Swerve.wheelCircumference, 1);
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions
+            .falconRotationsToMechanismDegrees(angleMotor.getPosition().getValueAsDouble(), 1));
         return new SwerveModuleState(velocity, angle);
     }
 

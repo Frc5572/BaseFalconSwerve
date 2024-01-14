@@ -57,6 +57,7 @@ public final class Constants {
         public static final edu.wpi.first.wpilibj.SPI.Port navXID =
             edu.wpi.first.wpilibj.SPI.Port.kMXP;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+        public static final String canBus = "rio";
 
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(14);
@@ -71,7 +72,7 @@ public final class Constants {
         public static final double closedLoopRamp = 0.4;
 
         public static final double driveGearRatio = (8.14 / 1.0); // 8.14:1
-        public static final double angleGearRatio = (12.8 / 1.0); // 12.8:1
+        public static final double angleGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0)); // 150/7:1
 
         public static final SwerveDriveKinematics swerveKinematics =
             new SwerveDriveKinematics(new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -117,8 +118,8 @@ public final class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
-        public static final boolean angleMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
+        public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
