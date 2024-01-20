@@ -3,8 +3,8 @@ package frc.lib.util.swerve;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
 import frc.lib.util.ctre.CTREModuleState;
 import frc.robot.Constants;
@@ -22,6 +23,7 @@ import frc.robot.Constants;
 public class SwerveModule {
     public int moduleNumber;
     private double angleOffset;
+    private double absoluteOffset = 0.0;
     private TalonFX angleMotor;
     private TalonFX driveMotor;
     private CANcoder angleEncoder;
@@ -30,8 +32,8 @@ public class SwerveModule {
     private TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     private CANcoderConfiguration swerveCanCoderConfig = new CANcoderConfiguration();
     private DutyCycleOut drivePower = new DutyCycleOut(0);
-    private VelocityDutyCycle driveSpeed = new VelocityDutyCycle(0).withSlot(0);
-    private PositionDutyCycle angleMotorPosition = new PositionDutyCycle(0).withSlot(0);
+    private VelocityVoltage driveSpeed = new VelocityVoltage(0).withSlot(0);
+    private PositionVoltage angleMotorPosition = new PositionVoltage(0).withSlot(0);
     // Use Voltage to turn Voltage Compensation on
     // private VelocityVoltage driveSpeed = new VelocityVoltage(0).withSlot(0);
     // private PositionVoltage angleMotorPosition = new PositionVoltage(0).withSlot(0);
@@ -81,7 +83,11 @@ public class SwerveModule {
             // See Line 186, swerveDriveFXConfig.Feedback.SensorToMechanismRatio
             double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
                 Constants.Swerve.wheelCircumference, 1);
-            driveMotor.setControl(driveSpeed.withVelocity(velocity));
+            if (Math.abs(velocity) <= 0.01) {
+                driveMotor.setControl(drivePower.withOutput(0.0));
+            } else {
+                driveMotor.setControl(driveSpeed.withVelocity(velocity));
+            }
         }
 
         // Prevent rotating module if speed is less then 1%. Prevents Jittering.
@@ -96,12 +102,15 @@ public class SwerveModule {
         lastAngle = angle;
     }
 
+    public void periodic() {
+        SmartDashboard.putNumber("Mod" + moduleNumber + "", )
+    }
+
     /**
      *
      */
     private void resetToAbsolute() {
-        double absolutePosition = getCanCoderRaw() / Constants.Swerve.angleGearRatio;
-        swerveAngleFXConfig.Feedback.FeedbackRotorOffset = absolutePosition;
+        absoluteOffset = getCanCoderRaw();
         angleMotor.getConfigurator().apply(swerveAngleFXConfig);
     }
 
@@ -152,7 +161,7 @@ public class SwerveModule {
         swerveAngleFXConfig.Slot0.kD = Constants.Swerve.angleKD;
         // swerveAngleFXConfig.Slot0.kS = 0;
         // swerveAngleFXConfig.Slot0.kV = 0;
-        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = 1 / Constants.Swerve.angleGearRatio;
+        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.angleGearRatio;
         // swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
         angleMotor.getConfigurator().apply(swerveAngleFXConfig);
         angleMotor.setInverted(Constants.Swerve.angleMotorInvert);

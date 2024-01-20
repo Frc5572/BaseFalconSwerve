@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import org.photonvision.PhotonCamera;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +21,7 @@ import frc.robot.Constants;
 public class Swerve extends SubsystemBase {
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
     public SwerveDrivePoseEstimator swerveOdometry;
-    private PhotonCamera cam = new PhotonCamera(Constants.CameraConstants.cameraName);
+    // private PhotonCamera cam = new PhotonCamera(Constants.CameraConstants.cameraName);
     public SwerveModule[] swerveMods;
     private double fieldOffset = gyro.getYaw();
     ChassisSpeeds chassisSpeeds;
@@ -36,10 +35,10 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Field Pos", field);
 
 
-        swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),};
-        // new SwerveModule(1, Constants.Swerve.Mod1.constants),
-        // new SwerveModule(2, Constants.Swerve.Mod2.constants),
-        // new SwerveModule(3, Constants.Swerve.Mod3.constants)};
+        swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
+            new SwerveModule(1, Constants.Swerve.Mod1.constants),
+            new SwerveModule(2, Constants.Swerve.Mod2.constants),
+            new SwerveModule(3, Constants.Swerve.Mod3.constants)};
 
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
             getPositions(), new Pose2d());
@@ -50,12 +49,10 @@ public class Swerve extends SubsystemBase {
      */
     public void wheelsIn() {
         swerveMods[0].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(45)), false);
-        // swerveMods[1].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(135)),
-        // false);
-        // swerveMods[2].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-45)),
-        // false);
-        // swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
-        // false);
+        swerveMods[1].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(135)), false);
+        swerveMods[2].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-45)), false);
+        swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
+            false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
     }
 

@@ -72,7 +72,7 @@ public final class Constants {
         public static final double closedLoopRamp = 0.4;
 
         public static final double driveGearRatio = (8.14 / 1.0); // 8.14:1
-        public static final double angleGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0)); // 150/7:1
+        public static final double angleGearRatio = -1 / ((14.0 / 50.0) * (10.0 / 60.0)); // 150/7:1
 
         public static final SwerveDriveKinematics swerveKinematics =
             new SwerveDriveKinematics(new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -92,22 +92,22 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.6;
+        public static final double angleKP = -0.6 * 12.0;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 12.0;
+        public static final double angleKD = 0.0;
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.10;
+        public static final double driveKP = 0.1;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.667 / 12);
+        public static final double driveKS = (0.667);
         // divide by 12 to convert from volts to percent output for CTRE
-        public static final double driveKV = (2.44 / 12);
-        public static final double driveKA = (0.27 / 12);
+        public static final double driveKV = (2.44);
+        public static final double driveKA = (0.27);
 
         /* Swerve Profiling Values */
         public static final double maxSpeed = 4; // meters per second
@@ -119,7 +119,7 @@ public final class Constants {
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
-        public static final boolean angleMotorInvert = true;
+        public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
