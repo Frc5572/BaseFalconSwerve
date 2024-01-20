@@ -2,14 +2,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 /**
  * Zeros motors then executes normal wait command.
  */
-public class ZeroMotorsWaitCommand extends CommandBase {
+public class ZeroMotorsWaitCommand extends Command {
     protected Timer m_timer = new Timer();
     private final double m_duration;
     private Swerve s_Swerve;
