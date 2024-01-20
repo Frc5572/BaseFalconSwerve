@@ -151,7 +151,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * Reset all modules to their fron facing position
+     * Reset all modules to their front facing position
      */
     public void resetModulesToAbsolute() {
         for (SwerveModule mod : swerveMods) {

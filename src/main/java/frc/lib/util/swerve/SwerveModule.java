@@ -120,7 +120,7 @@ public class SwerveModule {
      * Set the desired state of the Swerve Module
      *
      * @param desiredState The desired {@link SwerveModuleState} for the module
-     * @param isOpenLoop Whether the state should be open or closed loop controled
+     * @param isOpenLoop Whether the state should be open or closed loop controlled
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
@@ -132,7 +132,7 @@ public class SwerveModule {
      * Set the velocity or power of the drive motor
      *
      * @param desiredState The desired {@link SwerveModuleState} of the module
-     * @param isOpenLoop Whether the state should be open or closed loop controled
+     * @param isOpenLoop Whether the state should be open or closed loop controlled
      */
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
