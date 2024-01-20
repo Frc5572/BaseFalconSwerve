@@ -1,5 +1,8 @@
 package frc.lib.math;
 
+/**
+ * Static Conversion functions
+ */
 public class Conversions {
 
     /**

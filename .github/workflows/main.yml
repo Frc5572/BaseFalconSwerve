@@ -38,6 +38,7 @@ jobs:
         uses: codespell-project/actions-codespell@master
         with:
           check_filenames: true
+          ignore_words_file: .codespellignore
   merge_conflict:
     runs-on: ubuntu-latest
     name: Find merge conflicts

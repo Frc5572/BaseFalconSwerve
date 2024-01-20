@@ -52,7 +52,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         driver.y().whileTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
-        driver.a().whileTrue(new InstantCommand(() -> s_Swerve.resetInitialized()));
     }
 
     /**

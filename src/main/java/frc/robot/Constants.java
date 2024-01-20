@@ -10,9 +10,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.swerve.SwerveModuleConstants;
 
+/**
+ * Project Constants
+ */
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    /**
+     * Swerve Constants
+     */
     public static final class Swerve {
         public static final edu.wpi.first.wpilibj.SPI.Port navXID =
             edu.wpi.first.wpilibj.SPI.Port.kMXP;
@@ -72,29 +78,30 @@ public final class Constants {
         public static final double angleKD = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.12; // TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.12;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.32; // TODO: This must be tuned to specific robot
+        public static final double driveKS = 0.32;
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4.5; // TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4.5;
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; // TODO: This must be tuned to
-                                                              // specific robot
+        public static final double maxAngularVelocity = 10.0;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
+        /**
+         * Front Left Module - Module 0
+         */
         public static final class Mod0 {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 8;
@@ -104,7 +111,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Front Right Module - Module 1 */
+        /**
+         * Front Right Module - Module 1
+         */
         public static final class Mod1 {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 9;
@@ -114,7 +123,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Left Module - Module 2 */
+        /**
+         * Back Left Module - Module 2
+         */
         public static final class Mod2 {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 40;
@@ -124,7 +135,9 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Right Module - Module 3 */
+        /**
+         * Back Right Module - Module 3
+         */
         public static final class Mod3 {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 51;
@@ -135,8 +148,10 @@ public final class Constants {
         }
     }
 
-    public static final class AutoConstants { // TODO: The below constants are used in the example
-                                              // auto, and must be tuned to specific robot
+    /**
+     * Auto Constants
+     */
+    public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
