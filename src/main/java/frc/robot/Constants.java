@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.lib.util.swerve.COTSTalonFXSwerveConstants;
 import frc.lib.util.swerve.SwerveModuleConstants;
 
 public final class Constants {
@@ -20,19 +19,11 @@ public final class Constants {
         public static final boolean isFieldRelative = true;
         public static final boolean isOpenLoop = false;
 
-        public static final COTSTalonFXSwerveConstants chosenModule = // TODO: This must be tuned to
-                                                                      // specific robot
-            COTSTalonFXSwerveConstants.SDS.MK4i
-                .Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
-
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.73); // TODO: This must be
-                                                                             // tuned to specific
-                                                                             // robot
-        public static final double wheelBase = Units.inchesToMeters(21.73); // TODO: This must be
-                                                                            // tuned to specific
-                                                                            // robot
-        public static final double wheelCircumference = chosenModule.wheelCircumference;
+        public static final double trackWidth = Units.inchesToMeters(22.5);
+        public static final double wheelBase = Units.inchesToMeters(29.0);
+        public static final double wheelDiameter = Units.inchesToMeters(4.0);
+        public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         /*
          * Swerve Kinematics No need to ever change this unless you are not doing a traditional
@@ -45,15 +36,17 @@ public final class Constants {
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
         /* Module Gear Ratios */
-        public static final double driveGearRatio = chosenModule.driveGearRatio;
-        public static final double angleGearRatio = chosenModule.angleGearRatio;
+        public static final double driveGearRatio = (8.14 / 1.0); // MK4i L1
+        public static final double angleGearRatio = ((150.0 / 7.0) / 1.0); // (150 / 7) : 1
 
         /* Motor Inverts */
-        public static final InvertedValue angleMotorInvert = chosenModule.angleMotorInvert;
-        public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
+        public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue driveMotorInvert =
+            InvertedValue.CounterClockwise_Positive;
 
         /* Angle Encoder Invert */
-        public static final SensorDirectionValue cancoderInvert = chosenModule.cancoderInvert;
+        public static final SensorDirectionValue cancoderInvert =
+            SensorDirectionValue.CounterClockwise_Positive;
 
         /* Swerve Current Limiting */
         public static final int angleCurrentLimit = 25;
@@ -74,9 +67,9 @@ public final class Constants {
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = chosenModule.angleKP;
-        public static final double angleKI = chosenModule.angleKI;
-        public static final double angleKD = chosenModule.angleKD;
+        public static final double angleKP = 100.0;
+        public static final double angleKI = 0.0;
+        public static final double angleKD = 0.0;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 0.12; // TODO: This must be tuned to specific robot
@@ -102,7 +95,7 @@ public final class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
-        public static final class Mod0 { // TODO: This must be tuned to specific robot
+        public static final class Mod0 {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 10;
@@ -112,7 +105,7 @@ public final class Constants {
         }
 
         /* Front Right Module - Module 1 */
-        public static final class Mod1 { // TODO: This must be tuned to specific robot
+        public static final class Mod1 {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 1;
@@ -122,7 +115,7 @@ public final class Constants {
         }
 
         /* Back Left Module - Module 2 */
-        public static final class Mod2 { // TODO: This must be tuned to specific robot
+        public static final class Mod2 {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 40;
             public static final int canCoderID = 2;
@@ -132,7 +125,7 @@ public final class Constants {
         }
 
         /* Back Right Module - Module 3 */
-        public static final class Mod3 { // TODO: This must be tuned to specific robot
+        public static final class Mod3 {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 51;
             public static final int canCoderID = 4;

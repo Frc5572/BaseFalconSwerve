@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -26,7 +27,7 @@ public class ZeroMotorsWaitCommand extends Command {
 
     @Override
     public void initialize() {
-        // s_Swerve.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
+        s_Swerve.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
         m_timer.reset();
         m_timer.start();
     }
