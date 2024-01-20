@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import org.photonvision.PhotonCamera;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.FieldConstants;
 import frc.lib.util.swerve.SwerveModule;
 import frc.robot.Constants;
 
@@ -39,10 +36,10 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Field Pos", field);
 
 
-        swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)};
+        swerveMods = new SwerveModule[] {new SwerveModule(0, Constants.Swerve.Mod0.constants),};
+        // new SwerveModule(1, Constants.Swerve.Mod1.constants),
+        // new SwerveModule(2, Constants.Swerve.Mod2.constants),
+        // new SwerveModule(3, Constants.Swerve.Mod3.constants)};
 
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
             getPositions(), new Pose2d());
@@ -53,10 +50,12 @@ public class Swerve extends SubsystemBase {
      */
     public void wheelsIn() {
         swerveMods[0].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(45)), false);
-        swerveMods[1].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(135)), false);
-        swerveMods[2].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-45)), false);
-        swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
-            false);
+        // swerveMods[1].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(135)),
+        // false);
+        // swerveMods[2].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-45)),
+        // false);
+        // swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
+        // false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
     }
 
@@ -136,7 +135,7 @@ public class Swerve extends SubsystemBase {
      * @return Swerve module state
      */
     public SwerveModuleState[] getStates() {
-        SwerveModuleState[] states = new SwerveModuleState[4];
+        SwerveModuleState[] states = new SwerveModuleState[swerveMods.length];
         for (SwerveModule mod : swerveMods) {
             states[mod.moduleNumber] = mod.getState();
         }
@@ -168,59 +167,59 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         Rotation2d yaw = getYaw();
-        swerveOdometry.update(yaw, getPositions());
-        var res = cam.getLatestResult();
-        if (res.hasTargets()) {
-            var imageCaptureTime = res.getTimestampSeconds();
-            if (!hasInitialized) {
-                var target = res.getBestTarget();
-                var camToTargetTrans = target.getBestCameraToTarget();
-                var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
-                if (aprilTagPose != null) {
-                    var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
-                    var robotPose =
-                        camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
-                    swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
-                    SmartDashboard.putNumberArray("Initial Position",
-                        new double[] {robotPose.getX(), robotPose.getY()});
-                    hasInitialized = true;
-                }
+        // swerveOdometry.update(yaw, getPositions());
+        // var res = cam.getLatestResult();
+        // if (res.hasTargets()) {
+        // var imageCaptureTime = res.getTimestampSeconds();
+        // if (!hasInitialized) {
+        // var target = res.getBestTarget();
+        // var camToTargetTrans = target.getBestCameraToTarget();
+        // var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
+        // if (aprilTagPose != null) {
+        // var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
+        // var robotPose =
+        // camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
+        // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
+        // SmartDashboard.putNumberArray("Initial Position",
+        // new double[] {robotPose.getX(), robotPose.getY()});
+        // hasInitialized = true;
+        // }
 
-            }
-            var pose2dList = new ArrayList<Pose2d>();
-            var target = res.getBestTarget();
-            // for (var Target : res.targets) {
+        // }
+        // var pose2dList = new ArrayList<Pose2d>();
+        // var target = res.getBestTarget();
+        // // for (var Target : res.targets) {
 
-            var camToTargetTrans = target.getBestCameraToTarget();
-            var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
-            if (aprilTagPose != null) {
-                var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
-                var robotPose =
-                    camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
-                pose2dList.add(robotPose);
-                // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
-                if (robotPose.minus(getPose()).getTranslation()
-                    .getNorm() < Constants.CameraConstants.largestDistance) {
-                    swerveOdometry.addVisionMeasurement(robotPose, imageCaptureTime,
-                        VecBuilder.fill(Constants.SwerveTransformPID.stdDevMod / target.getArea(),
-                            Constants.SwerveTransformPID.stdDevMod / target.getArea(),
-                            Constants.SwerveTransformPID.stdDevMod / target.getArea()));
-                }
-            }
-            // }
+        // var camToTargetTrans = target.getBestCameraToTarget();
+        // var aprilTagPose = FieldConstants.aprilTags.get(target.getFiducialId());
+        // if (aprilTagPose != null) {
+        // var camPose = aprilTagPose.transformBy(camToTargetTrans.inverse());
+        // var robotPose =
+        // camPose.transformBy(Constants.CameraConstants.kCameraToRobot).toPose2d();
+        // pose2dList.add(robotPose);
+        // // swerveOdometry.resetPosition(getYaw(), getPositions(), robotPose);
+        // if (robotPose.minus(getPose()).getTranslation()
+        // .getNorm() < Constants.CameraConstants.largestDistance) {
+        // swerveOdometry.addVisionMeasurement(robotPose, imageCaptureTime,
+        // VecBuilder.fill(Constants.SwerveTransformPID.stdDevMod / target.getArea(),
+        // Constants.SwerveTransformPID.stdDevMod / target.getArea(),
+        // Constants.SwerveTransformPID.stdDevMod / target.getArea()));
+        // }
+        // }
+        // // }
 
 
-            outer: for (int i = 0; i < pose2dList.size(); i++) {
-                for (int j = i + 1; j < pose2dList.size(); j++) {
-                    var diff = pose2dList.get(i).minus(pose2dList.get(j));
-                    if (diff.getTranslation()
-                        .getNorm() < Constants.CameraConstants.largestDistance) {
-                        swerveOdometry.resetPosition(getYaw(), getPositions(), pose2dList.get(i));
-                        break outer;
-                    }
-                }
-            }
-        }
+        // outer: for (int i = 0; i < pose2dList.size(); i++) {
+        // for (int j = i + 1; j < pose2dList.size(); j++) {
+        // var diff = pose2dList.get(i).minus(pose2dList.get(j));
+        // if (diff.getTranslation()
+        // .getNorm() < Constants.CameraConstants.largestDistance) {
+        // swerveOdometry.resetPosition(getYaw(), getPositions(), pose2dList.get(i));
+        // break outer;
+        // }
+        // }
+        // }
+        // }
 
 
         field.setRobotPose(swerveOdometry.getEstimatedPosition());
@@ -253,7 +252,7 @@ public class Swerve extends SubsystemBase {
      * @return Array of Swerve Module Positions
      */
     public SwerveModulePosition[] getPositions() {
-        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        SwerveModulePosition[] positions = new SwerveModulePosition[swerveMods.length];
 
         for (SwerveModule mod : swerveMods) {
             positions[mod.moduleNumber] = mod.getPosition();

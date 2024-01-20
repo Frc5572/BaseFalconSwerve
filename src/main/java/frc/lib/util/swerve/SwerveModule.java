@@ -129,7 +129,7 @@ public class SwerveModule {
                 : SensorDirectionValue.CounterClockwise_Positive;
         swerveCanCoderConfig.MagnetSensor.AbsoluteSensorRange =
             AbsoluteSensorRangeValue.Unsigned_0To1;
-        swerveCanCoderConfig.MagnetSensor.MagnetOffset = angleOffset;
+        swerveCanCoderConfig.MagnetSensor.MagnetOffset = -angleOffset;
         angleEncoder.getConfigurator().apply(swerveCanCoderConfig);
     }
 
@@ -152,7 +152,7 @@ public class SwerveModule {
         swerveAngleFXConfig.Slot0.kD = Constants.Swerve.angleKD;
         // swerveAngleFXConfig.Slot0.kS = 0;
         // swerveAngleFXConfig.Slot0.kV = 0;
-        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.angleGearRatio;
+        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = 1 / Constants.Swerve.angleGearRatio;
         // swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
         angleMotor.getConfigurator().apply(swerveAngleFXConfig);
         angleMotor.setInverted(Constants.Swerve.angleMotorInvert);
