@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -43,7 +42,10 @@ public class SwerveModule {
      * Swerve Module
      *
      * @param moduleNumber Module Number
-     * @param moduleConstants {@link SwerveModuleConstants} for the Swerve Module
+     * @param driveMotorID CAN ID of the Drive Motor
+     * @param angleMotorID CAN ID of the Angle Motor
+     * @param cancoderID CAN ID of the CANCoder
+     * @param angleOffset Angle Offset of the CANCoder to align the wheels
      */
     public SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID, int cancoderID,
         Rotation2d angleOffset) {
