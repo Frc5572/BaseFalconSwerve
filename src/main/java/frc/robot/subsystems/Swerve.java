@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,6 +11,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.swerve.SwerveModule;
@@ -43,6 +47,10 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(),
             getModulePositions());
+
+        AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getChassisSpeeds,
+            this::setModuleStates, Constants.Swerve.pathFollowerConfig, () -> shouldFlipPath(),
+            this);
     }
 
     /**
@@ -137,7 +145,7 @@ public class Swerve extends SubsystemBase {
      *
      * @param pose Pose2d to set
      */
-    public void setPose(Pose2d pose) {
+    public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
@@ -222,5 +230,13 @@ public class Swerve extends SubsystemBase {
         swerveMods[3].setDesiredState(new SwerveModuleState(2, Rotation2d.fromDegrees(-135)),
             false);
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
+    }
+
+    public static boolean shouldFlipPath() {
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        if (ally.isPresent()) {
+            return ally.get() == Alliance.Red;
+        }
+        return false;
     }
 }

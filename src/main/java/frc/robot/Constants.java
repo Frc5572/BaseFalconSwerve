@@ -3,6 +3,9 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -30,6 +33,8 @@ public final class Constants {
         public static final double wheelBase = Units.inchesToMeters(29.0);
         public static final double wheelDiameter = Units.inchesToMeters(4.0);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
+        public static final Translation2d MOD0_MODOFFSET =
+            new Translation2d(wheelBase / 2.0, trackWidth / 2.0);
 
         /*
          * Swerve Kinematics No need to ever change this unless you are not doing a traditional
@@ -138,6 +143,13 @@ public final class Constants {
             public static final int canCoderID = 4;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(3.955078125);
         }
+
+        public static final HolonomicPathFollowerConfig pathFollowerConfig =
+            new HolonomicPathFollowerConfig(new PIDConstants(5.0, 0, 0), // Translation constants
+                new PIDConstants(5.0, 0, 0), // Rotation constants
+                maxSpeed, MOD0_MODOFFSET.getNorm(), // Drive base radius (distance from center
+                                                    // to furthest module)
+                new ReplanningConfig());
     }
 
     /**
