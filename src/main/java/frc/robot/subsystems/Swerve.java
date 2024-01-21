@@ -232,6 +232,11 @@ public class Swerve extends SubsystemBase {
         this.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
     }
 
+    /**
+     * Determine whether or not to flight the auto path
+     *
+     * @return True if flip path to Red Alliance, False if Blue
+     */
     public static boolean shouldFlipPath() {
         Optional<Alliance> ally = DriverStation.getAlliance();
         if (ally.isPresent()) {

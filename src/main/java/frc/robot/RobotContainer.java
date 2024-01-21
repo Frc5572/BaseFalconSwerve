@@ -66,8 +66,8 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        Command autocommand = new WaitCommand(1.0);
         String stuff = autoChooser.getSelected();
+        Command autocommand;
         switch (stuff) {
             case "Test Auto":
                 List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile("New Auto");
@@ -77,6 +77,8 @@ public class RobotContainer {
                     .andThen(new PathPlannerAuto("New Auto"));
 
                 break;
+            default:
+                autocommand = new WaitCommand(1.0);
         }
         return autocommand;
     }
