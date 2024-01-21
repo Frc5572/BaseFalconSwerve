@@ -57,7 +57,7 @@ public class Swerve extends SubsystemBase {
         boolean isOpenLoop) {
         ChassisSpeeds chassisSpeeds = fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
-                rotation, Rotation2d.fromDegrees(gyro.getYaw() - fieldOffset))
+                rotation, getFieldRelativeHeading())
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
 
         setModuleStates(chassisSpeeds);
@@ -86,6 +86,15 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         setModuleStates(swerveModuleStates);
+    }
+
+    /**
+     * Get current Chassis Speeds
+     *
+     * @return The current {@link ChassisSpeeds}
+     */
+    public ChassisSpeeds getChassisSpeeds() {
+        return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
@@ -135,7 +144,7 @@ public class Swerve extends SubsystemBase {
     /**
      * Get Rotation of robot from odometry
      *
-     * @return Rotation2d of robot relative to the field
+     * @return Heading of robot relative to the field as {@link Rotation2d}
      */
     public Rotation2d getHeading() {
         return getPose().getRotation();
@@ -144,10 +153,21 @@ public class Swerve extends SubsystemBase {
     /**
      * Get Rotation from the gyro
      *
-     * @return Rotation2d from gyro
+     * @return Current rotation/yaw of gyro as {@link Rotation2d}
      */
     public Rotation2d getGyroYaw() {
-        return Rotation2d.fromDegrees(gyro.getYaw());
+        float yaw = gyro.getYaw();
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
+            : Rotation2d.fromDegrees(yaw);
+    }
+
+    /**
+     * Get Field Relative Heading
+     *
+     * @return The current field relative heading in {@link Rotation2d}
+     */
+    public Rotation2d getFieldRelativeHeading() {
+        return Rotation2d.fromDegrees(getGyroYaw().getDegrees() - fieldOffset);
     }
 
     /**

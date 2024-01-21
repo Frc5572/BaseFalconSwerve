@@ -21,6 +21,7 @@ public final class Constants {
     public static final class Swerve {
         public static final edu.wpi.first.wpilibj.SPI.Port navXID =
             edu.wpi.first.wpilibj.SPI.Port.kMXP;
+        public static final boolean invertGyro = false;
         public static final boolean isFieldRelative = true;
         public static final boolean isOpenLoop = false;
 
