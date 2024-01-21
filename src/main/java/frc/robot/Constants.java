@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.lib.util.swerve.SwerveModuleConstants;
 
 /**
  * Project Constants
@@ -107,8 +106,6 @@ public final class Constants {
             public static final int angleMotorID = 8;
             public static final int canCoderID = 10;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(115.400390625);
-            public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /**
@@ -119,8 +116,6 @@ public final class Constants {
             public static final int angleMotorID = 9;
             public static final int canCoderID = 1;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-55.37109375);
-            public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /**
@@ -131,8 +126,6 @@ public final class Constants {
             public static final int angleMotorID = 40;
             public static final int canCoderID = 2;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(145.01953125);
-            public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /**
@@ -143,8 +136,6 @@ public final class Constants {
             public static final int angleMotorID = 51;
             public static final int canCoderID = 4;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(3.955078125);
-            public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
 

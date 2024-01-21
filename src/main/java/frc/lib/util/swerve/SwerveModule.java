@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -44,14 +45,15 @@ public class SwerveModule {
      * @param moduleNumber Module Number
      * @param moduleConstants {@link SwerveModuleConstants} for the Swerve Module
      */
-    public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
+    public SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID, int cancoderID,
+        Rotation2d angleOffset) {
         this.moduleNumber = moduleNumber;
-        this.angleOffset = moduleConstants.angleOffset;
+        this.angleOffset = angleOffset;
 
         /* Angle Encoder Config */
         swerveCANcoderConfig.MagnetSensor.SensorDirection = Constants.Swerve.cancoderInvert;
 
-        angleEncoder = new CANcoder(moduleConstants.cancoderID);
+        angleEncoder = new CANcoder(cancoderID);
         angleEncoder.getConfigurator().apply(swerveCANcoderConfig);
 
         /* Angle Motor Config */
@@ -76,7 +78,7 @@ public class SwerveModule {
         swerveAngleFXConfig.Slot0.kP = Constants.Swerve.angleKP;
         swerveAngleFXConfig.Slot0.kI = Constants.Swerve.angleKI;
         swerveAngleFXConfig.Slot0.kD = Constants.Swerve.angleKD;
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        mAngleMotor = new TalonFX(angleMotorID);
         mAngleMotor.getConfigurator().apply(swerveAngleFXConfig);
         resetToAbsolute();
 
@@ -111,7 +113,7 @@ public class SwerveModule {
             Constants.Swerve.closedLoopRamp;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
             Constants.Swerve.closedLoopRamp;
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        mDriveMotor = new TalonFX(driveMotorID);
         mDriveMotor.getConfigurator().apply(swerveDriveFXConfig);
         mDriveMotor.getConfigurator().setPosition(0.0);
     }
