@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -9,7 +9,7 @@ import frc.robot.subsystems.Swerve;
 /**
  * Creates an command for driving the swerve drive during tele-op
  */
-public class TeleopSwerve extends CommandBase {
+public class TeleopSwerve extends Command {
 
     private boolean fieldRelative;
     private boolean openLoop;
