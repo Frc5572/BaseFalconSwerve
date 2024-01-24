@@ -29,6 +29,7 @@ public final class Constants {
         public static final boolean isOpenLoop = false;
 
         /* Drivetrain Constants */
+        public static final String canbus = "canivore";
         public static final double trackWidth = Units.inchesToMeters(22.5);
         public static final double wheelBase = Units.inchesToMeters(29.0);
         public static final double wheelDiameter = Units.inchesToMeters(4.0);
