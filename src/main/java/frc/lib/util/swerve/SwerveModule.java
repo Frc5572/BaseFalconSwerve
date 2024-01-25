@@ -16,7 +16,7 @@ import frc.robot.Constants;
 public class SwerveModule {
     public int moduleNumber;
     private Rotation2d angleOffset;
-    private double lastAngle;
+    // private double lastAngle;
 
     private SwerveModuleIO io;
     private SwerveModuleInputsAutoLogged inputs = new SwerveModuleInputsAutoLogged();
@@ -49,7 +49,7 @@ public class SwerveModule {
 
         this.angleOffset = angleOffset;
 
-        lastAngle = getState().angle.getDegrees();
+        // lastAngle = getState().angle.getDegrees();
 
     }
 
@@ -61,7 +61,6 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-        // mAngleMotor.setControl(anglePosition.withPosition(desiredState.angle.getRotations()));
         io.setAngleMotor(anglePosition.withPosition(desiredState.angle.getRotations()));
         setSpeed(desiredState, isOpenLoop);
     }
@@ -75,14 +74,12 @@ public class SwerveModule {
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
             driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-            // mDriveMotor.setControl(driveDutyCycle);
             io.setDriveMotor(driveDutyCycle);
         } else {
             driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
                 Constants.Swerve.wheelCircumference);
             driveVelocity.FeedForward =
                 driveFeedForward.calculate(desiredState.speedMetersPerSecond);
-            // mDriveMotor.setControl(driveVelocity);
             io.setDriveMotor(driveDutyCycle);
         }
     }
@@ -101,7 +98,6 @@ public class SwerveModule {
      */
     public void resetToAbsolute() {
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
-        // mAngleMotor.setPosition(absolutePosition);
         io.setPositionAngleMotor(absolutePosition);
     }
 
@@ -112,11 +108,8 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            // Conversions.RPSToMPS(mDriveMotor.getVelocity().getValue(),
-            // Constants.Swerve.wheelCircumference),
             Conversions.RPSToMPS(io.getVelocityDriveMotor().getValue(),
                 Constants.Swerve.wheelCircumference),
-            // Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
             Rotation2d.fromRotations(io.getPositionAngleMotor().getValue()));
     }
 
@@ -127,11 +120,8 @@ public class SwerveModule {
      */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            // Conversions.rotationsToMeters(mDriveMotor.getPosition().getValue(),
-            // Constants.Swerve.wheelCircumference),
             Conversions.rotationsToMeters(io.getPositionDriveMotor().getValue(),
                 Constants.Swerve.wheelCircumference),
-            // Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
             Rotation2d.fromRotations(io.getPositionAngleMotor().getValue()));
 
     }

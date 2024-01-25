@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import org.littletonrobotics.junction.AutoLog;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.util.swerve.SwerveModule;
 import frc.lib.util.swerve.SwerveModuleIO;
 
@@ -16,9 +17,12 @@ public interface SwerveIO {
 
     public default void updateInputs(SwerveInputs inputs) {}
 
-    public default SwerveModule createSwerveModule(int moduleNumber,
-        frc.lib.util.swerve.SwerveModuleConstants constants) {
-        return new SwerveModule(moduleNumber, constants, new SwerveModuleIO() {});
+    public default SwerveModule createSwerveModule(int moduleNumber, int driveMotorID,
+        int angleMotorID, int cancoderID, Rotation2d angleOffset) {
+        return new SwerveModule(moduleNumber, driveMotorID, angleMotorID, cancoderID, angleOffset,
+            new SwerveModuleIO() {
+
+            });
     }
 
 }

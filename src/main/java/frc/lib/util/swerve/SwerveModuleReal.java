@@ -18,7 +18,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     private CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
 
     public SwerveModuleReal(int moduleNumber, int driveMotorID, int angleMotorID, int cancoderID,
-        Rotation2d angleOffset, SwerveModuleIO io) {
+        Rotation2d angleOffset) {
 
         angleEncoder = new CANcoder(cancoderID);
         mDriveMotor = new TalonFX(driveMotorID);
@@ -100,30 +100,37 @@ public class SwerveModuleReal implements SwerveModuleIO {
         angleEncoder.getConfigurator().apply(swerveCANcoderConfig);
     }
 
+    @Override
     public void setAngleMotor(ControlRequest request) {
         mAngleMotor.setControl(request);
     }
 
+    @Override
     public void setDriveMotor(ControlRequest request) {
         mDriveMotor.setControl(request);
     }
 
+    @Override
     public StatusSignal<Double> getAbsolutePositionAngleEncoder() {
         return angleEncoder.getAbsolutePosition();
     }
 
+    @Override
     public void setPositionAngleMotor(double absolutePosition) {
         mAngleMotor.setPosition(absolutePosition);
     }
 
+    @Override
     public StatusSignal<Double> getVelocityDriveMotor() {
         return mDriveMotor.getVelocity();
     }
 
+    @Override
     public StatusSignal<Double> getPositionAngleMotor() {
         return mAngleMotor.getPosition();
     }
 
+    @Override
     public StatusSignal<Double> getPositionDriveMotor() {
         return mDriveMotor.getPosition();
     }

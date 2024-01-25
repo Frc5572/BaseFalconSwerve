@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.swerve.SwerveModule;
-import frc.lib.util.swerve.SwerveModuleIO;
 import frc.robot.Constants;
 
 /**
@@ -31,20 +30,20 @@ public class Swerve extends SubsystemBase {
     /**
      * Swerve Subsystem
      */
-    public Swerve(SwerveIO swerveIO, SwerveModuleIO swerveModuleIO) {
+    public Swerve(SwerveIO swerveIO) {
         swerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.driveMotorID,
+            swerveIO.createSwerveModule(0, Constants.Swerve.Mod0.driveMotorID,
                 Constants.Swerve.Mod0.angleMotorID, Constants.Swerve.Mod0.canCoderID,
-                Constants.Swerve.Mod0.angleOffset, swerveModuleIO),
-            new SwerveModule(1, Constants.Swerve.Mod1.driveMotorID,
+                Constants.Swerve.Mod0.angleOffset),
+            swerveIO.createSwerveModule(1, Constants.Swerve.Mod1.driveMotorID,
                 Constants.Swerve.Mod1.angleMotorID, Constants.Swerve.Mod1.canCoderID,
-                Constants.Swerve.Mod1.angleOffset, swerveModuleIO),
-            new SwerveModule(2, Constants.Swerve.Mod2.driveMotorID,
+                Constants.Swerve.Mod1.angleOffset),
+            swerveIO.createSwerveModule(2, Constants.Swerve.Mod2.driveMotorID,
                 Constants.Swerve.Mod2.angleMotorID, Constants.Swerve.Mod2.canCoderID,
-                Constants.Swerve.Mod2.angleOffset, swerveModuleIO),
-            new SwerveModule(3, Constants.Swerve.Mod3.driveMotorID,
+                Constants.Swerve.Mod2.angleOffset),
+            swerveIO.createSwerveModule(3, Constants.Swerve.Mod3.driveMotorID,
                 Constants.Swerve.Mod3.angleMotorID, Constants.Swerve.Mod3.canCoderID,
-                Constants.Swerve.Mod3.angleOffset, swerveModuleIO)};
+                Constants.Swerve.Mod3.angleOffset)};
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(),
             getModulePositions());

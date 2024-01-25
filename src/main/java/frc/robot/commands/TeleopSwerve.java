@@ -17,7 +17,7 @@ public class TeleopSwerve extends Command {
     private CommandXboxController controller;
 
     /**
-     * Creates an command for driving the swerve drive during tele-op
+     * Creates a command for driving the swerve drive during tele-op
      *
      * @param swerveDrive The instance of the swerve drive subsystem
      * @param fieldRelative Whether the movement is relative to the field or absolute
