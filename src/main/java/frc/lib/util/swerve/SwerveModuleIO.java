@@ -1,7 +1,6 @@
 package frc.lib.util.swerve;
 
 import org.littletonrobotics.junction.AutoLog;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.ControlRequest;
 
 /** IO Class for SwerveModule */
@@ -26,22 +25,22 @@ public interface SwerveModuleIO {
 
     public default void setAngleSelectedSensorPosition(double angle) {}
 
-    public default StatusSignal<Double> getAbsolutePositionAngleEncoder() {
-        return null;
+    public default double getAbsolutePositionAngleEncoder() {
+        return 0.0;
     }
 
     public default void setPositionAngleMotor(double absolutePosition) {}
 
-    public default StatusSignal<Double> getVelocityDriveMotor() {
-        return null;
+    public default double getVelocityDriveMotor() {
+        return 0.0;
     }
 
-    public default StatusSignal<Double> getPositionAngleMotor() {
-        return null;
+    public default double getPositionAngleMotor() {
+        return 0.0;
     }
 
-    public default StatusSignal<Double> getPositionDriveMotor() {
-        return null;
+    public default double getPositionDriveMotor() {
+        return 0.0;
     }
 
 }

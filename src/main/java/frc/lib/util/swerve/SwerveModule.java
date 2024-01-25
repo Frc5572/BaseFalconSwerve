@@ -90,7 +90,7 @@ public class SwerveModule {
      * @return The rotation of the CANCoder in {@link Rotation2d}
      */
     public Rotation2d getCANcoder() {
-        return Rotation2d.fromRotations(io.getAbsolutePositionAngleEncoder().getValue());
+        return Rotation2d.fromRotations(io.getAbsolutePositionAngleEncoder());
     }
 
     /**
@@ -108,9 +108,8 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            Conversions.RPSToMPS(io.getVelocityDriveMotor().getValue(),
-                Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(io.getPositionAngleMotor().getValue()));
+            Conversions.RPSToMPS(io.getVelocityDriveMotor(), Constants.Swerve.wheelCircumference),
+            Rotation2d.fromRotations(io.getPositionAngleMotor()));
     }
 
     /**
@@ -120,9 +119,9 @@ public class SwerveModule {
      */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(io.getPositionDriveMotor().getValue(),
+            Conversions.rotationsToMeters(io.getPositionDriveMotor(),
                 Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(io.getPositionAngleMotor().getValue()));
+            Rotation2d.fromRotations(io.getPositionAngleMotor()));
 
     }
 }

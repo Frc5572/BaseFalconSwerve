@@ -1,6 +1,5 @@
 package frc.lib.util.swerve;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -111,8 +110,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
     }
 
     @Override
-    public StatusSignal<Double> getAbsolutePositionAngleEncoder() {
-        return angleEncoder.getAbsolutePosition();
+    public double getAbsolutePositionAngleEncoder() {
+        return angleEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
     @Override
@@ -121,18 +120,18 @@ public class SwerveModuleReal implements SwerveModuleIO {
     }
 
     @Override
-    public StatusSignal<Double> getVelocityDriveMotor() {
-        return mDriveMotor.getVelocity();
+    public double getVelocityDriveMotor() {
+        return mDriveMotor.getVelocity().getValueAsDouble();
     }
 
     @Override
-    public StatusSignal<Double> getPositionAngleMotor() {
-        return mAngleMotor.getPosition();
+    public double getPositionAngleMotor() {
+        return mAngleMotor.getPosition().getValueAsDouble();
     }
 
     @Override
-    public StatusSignal<Double> getPositionDriveMotor() {
-        return mDriveMotor.getPosition();
+    public double getPositionDriveMotor() {
+        return mDriveMotor.getPosition().getValueAsDouble();
     }
 
 }
