@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import java.util.Optional;
 import com.kauailabs.navx.frc.AHRS;
@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.swerve.SwerveModule;
+import frc.lib.util.swerve.SwerveModuleIO;
 import frc.robot.Constants;
 
 /**
@@ -30,20 +31,20 @@ public class Swerve extends SubsystemBase {
     /**
      * Swerve Subsystem
      */
-    public Swerve() {
+    public Swerve(SwerveIO swerveIO, SwerveModuleIO swerveModuleIO) {
         swerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.driveMotorID,
                 Constants.Swerve.Mod0.angleMotorID, Constants.Swerve.Mod0.canCoderID,
-                Constants.Swerve.Mod0.angleOffset),
+                Constants.Swerve.Mod0.angleOffset, swerveModuleIO),
             new SwerveModule(1, Constants.Swerve.Mod1.driveMotorID,
                 Constants.Swerve.Mod1.angleMotorID, Constants.Swerve.Mod1.canCoderID,
-                Constants.Swerve.Mod1.angleOffset),
+                Constants.Swerve.Mod1.angleOffset, swerveModuleIO),
             new SwerveModule(2, Constants.Swerve.Mod2.driveMotorID,
                 Constants.Swerve.Mod2.angleMotorID, Constants.Swerve.Mod2.canCoderID,
-                Constants.Swerve.Mod2.angleOffset),
+                Constants.Swerve.Mod2.angleOffset, swerveModuleIO),
             new SwerveModule(3, Constants.Swerve.Mod3.driveMotorID,
                 Constants.Swerve.Mod3.angleMotorID, Constants.Swerve.Mod3.canCoderID,
-                Constants.Swerve.Mod3.angleOffset)};
+                Constants.Swerve.Mod3.angleOffset, swerveModuleIO)};
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(),
             getModulePositions());
