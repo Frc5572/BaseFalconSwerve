@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +27,22 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] swerveMods;
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
     private double fieldOffset = gyro.getYaw();
+
+    private SwerveIO io;
+    private SwerveInputsAutoLogged inputs = new SwerveInputsAutoLogged();
+
+    public Swerve(SwerveIO io) {
+        this.io = io;
+        SmartDashboard.putData("Field Pos", field);
+
+        for (int i = 0; i < 4; i++) {
+            swerveMods[i] = io.createSwerveModule(i, Constants.Swerve.swerveConstants[i]);
+        }
+        io.updateInputs(inputs);
+
+        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
+            getPositions(), new Pose2d());
+    }
 
     /**
      * Swerve Subsystem

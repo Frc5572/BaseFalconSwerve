@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -108,10 +109,12 @@ public final class Constants {
          * Front Left Module - Module 0
          */
         public static final class Mod0 {
-            public static final int driveMotorID = 10;
+            public static final int driveMotorID = 50;
             public static final int angleMotorID = 8;
-            public static final int canCoderID = 10;
+            public static final int canCoderID = 3;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(115.400390625);
+            public static final SwerveModuleConstants constants =
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /**
