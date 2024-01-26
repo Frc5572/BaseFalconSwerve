@@ -1,5 +1,6 @@
 package frc.lib.util.swerve;
 
+import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -43,14 +44,20 @@ public class SwerveModule {
     public SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID, int cancoderID,
         Rotation2d angleOffset, SwerveModuleIO io) {
         this.io = io;
-        io.updateInputs(inputs);
+
         this.moduleNumber = moduleNumber;
 
         this.angleOffset = angleOffset;
 
         // lastAngle = getState().angle.getDegrees();
+        io.updateInputs(inputs);
         resetToAbsolute();
+        Logger.processInputs("SwerveModule" + moduleNumber, inputs);
+    }
 
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("SwerveModule" + moduleNumber, inputs);
     }
 
     /**
@@ -75,12 +82,14 @@ public class SwerveModule {
         if (isOpenLoop) {
             driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
             io.setDriveMotor(driveDutyCycle);
+            inputs.driveMotorSelectedSensorVelocity = driveDutyCycle.Output;
         } else {
             driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
                 Constants.Swerve.wheelCircumference);
             driveVelocity.FeedForward =
                 driveFeedForward.calculate(desiredState.speedMetersPerSecond);
-            io.setDriveMotor(driveDutyCycle);
+            io.setDriveMotor(driveVelocity);
+            inputs.driveMotorSelectedSensorVelocity = driveDutyCycle.Output;
         }
     }
 
@@ -90,7 +99,7 @@ public class SwerveModule {
      * @return The rotation of the CANCoder in {@link Rotation2d}
      */
     public Rotation2d getCANcoder() {
-        return Rotation2d.fromRotations(io.getAbsolutePositionAngleEncoder());
+        return Rotation2d.fromRotations(inputs.absolutePositionAngleEncoder);
     }
 
     /**
@@ -99,6 +108,7 @@ public class SwerveModule {
     public void resetToAbsolute() {
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
         io.setPositionAngleMotor(absolutePosition);
+        inputs.angleMotorSelectedPosition = absolutePosition;
     }
 
     /**
@@ -108,8 +118,9 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            Conversions.RPSToMPS(io.getVelocityDriveMotor(), Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(io.getPositionAngleMotor()));
+            Conversions.RPSToMPS(inputs.driveMotorSelectedSensorVelocity,
+                Constants.Swerve.wheelCircumference),
+            Rotation2d.fromRotations(inputs.angleMotorSelectedPosition));
     }
 
     /**
@@ -119,9 +130,9 @@ public class SwerveModule {
      */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(io.getPositionDriveMotor(),
+            Conversions.rotationsToMeters(inputs.driveMotorSelectedPosition,
                 Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(io.getPositionAngleMotor()));
+            Rotation2d.fromRotations(inputs.angleMotorSelectedPosition));
 
     }
 }
