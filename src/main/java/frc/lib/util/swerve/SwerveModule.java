@@ -44,12 +44,12 @@ public class SwerveModule {
         Rotation2d angleOffset, SwerveModuleIO io) {
         this.io = io;
         io.updateInputs(inputs);
-        resetToAbsolute();
         this.moduleNumber = moduleNumber;
 
         this.angleOffset = angleOffset;
 
         // lastAngle = getState().angle.getDegrees();
+        resetToAbsolute();
 
     }
 

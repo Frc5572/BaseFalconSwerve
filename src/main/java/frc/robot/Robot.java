@@ -34,10 +34,11 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
-        Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+        Logger.recordMetadata("ProjectName", "FRC2023"); // Set a metadata value
 
         if (isReal()) {
-            Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+            Logger.addDataReceiver(new WPILOGWriter("/media/sda2/")); // Log to a USB stick
+                                                                      // ("/U/logs")
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             new PowerDistribution(1, ModuleType.kCTRE); // Enables power distribution logging
         } else {
@@ -59,8 +60,9 @@ public class Robot extends LoggedRobot {
             // Instantiate our RobotContainer. This will perform all our button bindings, and put
             // our
             // autonomous chooser on the dashboard.
-            m_robotContainer = new RobotContainer(isReal());
         }
+        m_robotContainer = new RobotContainer(isReal());
+
     }
 
     /**
