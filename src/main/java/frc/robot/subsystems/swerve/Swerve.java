@@ -1,9 +1,9 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,40 +27,28 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] swerveMods;
     public AHRS gyro = new AHRS(Constants.Swerve.navXID);
     private double fieldOffset = gyro.getYaw();
-
-    private SwerveIO io;
     private SwerveInputsAutoLogged inputs = new SwerveInputsAutoLogged();
-
-    public Swerve(SwerveIO io) {
-        this.io = io;
-        SmartDashboard.putData("Field Pos", field);
-
-        for (int i = 0; i < 4; i++) {
-            swerveMods[i] = io.createSwerveModule(i, Constants.Swerve.swerveConstants[i]);
-        }
-        io.updateInputs(inputs);
-
-        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(),
-            getPositions(), new Pose2d());
-    }
+    private SwerveIO swerveIO;
 
     /**
      * Swerve Subsystem
      */
-    public Swerve() {
+    public Swerve(SwerveIO swerveIO) {
+        this.swerveIO = swerveIO;
+        swerveIO.updateInputs(inputs);
         swerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.driveMotorID,
-                Constants.Swerve.Mod0.angleMotorID, Constants.Swerve.Mod0.canCoderID,
-                Constants.Swerve.Mod0.angleOffset),
-            new SwerveModule(1, Constants.Swerve.Mod1.driveMotorID,
-                Constants.Swerve.Mod1.angleMotorID, Constants.Swerve.Mod1.canCoderID,
-                Constants.Swerve.Mod1.angleOffset),
-            new SwerveModule(2, Constants.Swerve.Mod2.driveMotorID,
-                Constants.Swerve.Mod2.angleMotorID, Constants.Swerve.Mod2.canCoderID,
-                Constants.Swerve.Mod2.angleOffset),
-            new SwerveModule(3, Constants.Swerve.Mod3.driveMotorID,
-                Constants.Swerve.Mod3.angleMotorID, Constants.Swerve.Mod3.canCoderID,
-                Constants.Swerve.Mod3.angleOffset)};
+            swerveIO.createSwerveModule(0, Constants.Swerve.Mod0.DRIVE_MOTOR_ID,
+                Constants.Swerve.Mod0.ANGLE_MOTOR_ID, Constants.Swerve.Mod0.CAN_CODER_ID,
+                Constants.Swerve.Mod0.ANGLE_OFFSET),
+            swerveIO.createSwerveModule(1, Constants.Swerve.Mod1.DRIVE_MOTOR_ID,
+                Constants.Swerve.Mod1.ANGLE_MOTOR_ID, Constants.Swerve.Mod1.CAN_CODER_ID,
+                Constants.Swerve.Mod1.ANGLE_OFFSET),
+            swerveIO.createSwerveModule(2, Constants.Swerve.Mod2.DRIVE_MOTOR_ID,
+                Constants.Swerve.Mod2.ANGLE_MOTOR_ID, Constants.Swerve.Mod2.CAN_CODER_ID,
+                Constants.Swerve.Mod2.ANGLE_OFFSET),
+            swerveIO.createSwerveModule(3, Constants.Swerve.Mod3.DRIVE_MOTOR_ID,
+                Constants.Swerve.Mod3.ANGLE_MOTOR_ID, Constants.Swerve.Mod3.CAN_CODER_ID,
+                Constants.Swerve.Mod3.ANGLE_OFFSET)};
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(),
             getModulePositions());
@@ -215,8 +203,10 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-
+        swerveIO.updateInputs(inputs);
+        Logger.processInputs("Swerve", inputs);
         for (SwerveModule mod : swerveMods) {
+            mod.periodic();
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder",
                 mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle",

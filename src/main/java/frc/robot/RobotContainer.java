@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.SwerveIO;
-import frc.robot.subsystems.SwerveReal;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveIO;
+import frc.robot.subsystems.swerve.SwerveReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,24 +33,16 @@ public class RobotContainer {
 
     private final SendableChooser<String> autoChooser = new SendableChooser<>();
 
-    SwerveIO swerveIO;;
-
-
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
-
-
+    private final Swerve s_Swerve;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(boolean isReal) {
-
         if (isReal) {
-            // Instantiate IO Implements
             s_Swerve = new Swerve(new SwerveReal());
         } else {
             s_Swerve = new Swerve(new SwerveIO() {});
         }
-
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
         // autoChooser.addOption(resnickAuto, new ResnickAuto(s_Swerve));
@@ -58,7 +50,6 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
     }
-
 
     public void periodic() {
 

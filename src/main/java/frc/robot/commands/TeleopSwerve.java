@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.swerve.Swerve;
 
 /**
  * Creates an command for driving the swerve drive during tele-op
@@ -17,7 +17,7 @@ public class TeleopSwerve extends Command {
     private CommandXboxController controller;
 
     /**
-     * Creates an command for driving the swerve drive during tele-op
+     * Creates a command for driving the swerve drive during tele-op
      *
      * @param swerveDrive The instance of the swerve drive subsystem
      * @param fieldRelative Whether the movement is relative to the field or absolute
