@@ -186,6 +186,11 @@
       <message key="name.invalidPattern"
              value="Member name ''{0}'' must match pattern ''{1}''."/>
     </module>
+    <module name="ParameterName">
+      <property name="format" value="^[_a-z]([_a-zA-Z0-9]*)?$"/>
+      <message key="name.invalidPattern"
+             value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+    </module>
     <module name="LambdaParameterName">
       <property name="format" value="^[_a-z]([_a-zA-Z0-9]*)?$"/>
       <message key="name.invalidPattern"
@@ -314,7 +319,7 @@
                value="^@return the *|^This method returns |^A [{]@code [_a-zA-Z0-9]+[}]( is a )"/>
     </module> -->
     <module name="JavadocParagraph">
-      <property name="allowNewlineParagraph" value="false"/>
+      <property name="allowNewlineParagraph" value="true"/>
     </module>
     <module name="JavadocStyle">
       <property name="checkFirstSentence" value="false"/>
@@ -345,6 +350,11 @@
                 value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
                       RECORD_DEF, ANNOTATION_DEF"/>
       <property name="excludeScope" value="nothing"/>
+    </module>
+    <module name="MethodName">
+      <property name="format" value="^[_a-z][_a-zA-Z0-9_]*$"/>
+      <message key="name.invalidPattern"
+             value="Method name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="SingleLineJavadoc"/>
     <module name="EmptyCatchBlock">
