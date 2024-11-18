@@ -193,9 +193,9 @@ public final class Constants {
         public static final boolean isOpenLoop = false;
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(23.75); // TODO
-        public static final double wheelBase = Units.inchesToMeters(17.75); // TODO
-        public static final double wheelDiameter = Units.inchesToMeters(3.8); // TODO
+        public static final double trackWidth = Units.inchesToMeters(22); // DONE
+        public static final double wheelBase = Units.inchesToMeters(22); // DONE
+        public static final double wheelDiameter = Units.inchesToMeters(4); // DONE
         public static final double wheelCircumference = wheelDiameter * Math.PI;
         public static final Translation2d MOD0_MODOFFSET =
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0);
@@ -274,11 +274,11 @@ public final class Constants {
          * Front Left Module - Module 0
          */
         public static final class Mod0 {
-            public static final int driveMotorID = 6;
-            public static final int angleMotorID = 51;
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 6;
             public static final int canCoderID = 4;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(183.955078125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.496826);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.376953 + 0.5);
 
         }
 
@@ -287,10 +287,10 @@ public final class Constants {
          */
         public static final class Mod1 {
             public static final int driveMotorID = 2;
-            public static final int angleMotorID = 40;
-            public static final int canCoderID = 2;
+            public static final int angleMotorID = 5;
+            public static final int canCoderID = 3;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(325.01953125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.405518 + 0.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.357178);
 
         }
 
@@ -298,11 +298,11 @@ public final class Constants {
          * Back Left Module - Module 2
          */
         public static final class Mod2 {
-            public static final int driveMotorID = 3;
-            public static final int angleMotorID = 9;
-            public static final int canCoderID = 1;
+            public static final int driveMotorID = 4;
+            public static final int angleMotorID = 7;
+            public static final int canCoderID = 2;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(124.62890625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.348145);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.278809);
 
         }
 
@@ -310,11 +310,11 @@ public final class Constants {
          * Back Right Module - Module 3
          */
         public static final class Mod3 {
-            public static final int driveMotorID = 10;
+            public static final int driveMotorID = 3;
             public static final int angleMotorID = 8;
-            public static final int canCoderID = 10;
+            public static final int canCoderID = 1;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(295.400390625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.317627 + 0.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.409180 + 0.5);
         }
 
         public static final HolonomicPathFollowerConfig pathFollowerConfig =

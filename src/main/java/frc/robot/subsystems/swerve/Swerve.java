@@ -213,33 +213,33 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Robot.profiler.push("swerve_periodic");
-        Robot.profiler.push("update_inputs");
+        // Robot.profiler.push("swerve_periodic");
+        // Robot.profiler.push("update_inputs");
         swerveIO.updateInputs(inputs);
-        Robot.profiler.swap("update_swerve_mods");
+        // Robot.profiler.swap("update_swerve_mods");
         for (var mod : swerveMods) {
             mod.periodic();
         }
-        Robot.profiler.swap("update_swerve_odometry");
+        // Robot.profiler.swap("update_swerve_odometry");
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-        Robot.profiler.swap("process_inputs");
+        // Robot.profiler.swap("process_inputs");
         Logger.processInputs("Swerve", inputs);
-        Robot.profiler.swap("update_shuffleboard");
-        Robot.profiler.push("field");
+        // Robot.profiler.swap("update_shuffleboard");
+        // Robot.profiler.push("field");
         field.setRobotPose(getPose());
-        Robot.profiler.swap("apriltag");
+        // Robot.profiler.swap("apriltag");
 
-        Robot.profiler.swap("dist-to-speaker");
+        // Robot.profiler.swap("dist-to-speaker");
         SmartDashboard.putNumber("Distance to Speaker",
             FieldConstants.allianceFlip(FieldConstants.Speaker.centerSpeakerOpening)
                 .getTranslation().minus(getPose().getTranslation()).getNorm());
-        Robot.profiler.swap("simple");
+        // Robot.profiler.swap("simple");
         SmartDashboard.putNumber("Gyro Yaw", getGyroYaw().getDegrees());
         Logger.recordOutput("/Swerve/ActualStates", getModuleStates());
-        Robot.profiler.pop();
-        Robot.profiler.pop();
-        Robot.profiler.swap("viz");
-        Robot.profiler.pop();
+        // Robot.profiler.pop();
+        // Robot.profiler.pop();
+        // Robot.profiler.swap("viz");
+        // Robot.profiler.pop();
     }
 
     /**
