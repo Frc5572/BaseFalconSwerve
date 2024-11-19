@@ -21,6 +21,7 @@ import frc.lib.util.FieldConstants;
  * Constants file.
  */
 public final class Constants {
+    public static final boolean tuningMode = true;
     /**
      * Stick Deadband
      */

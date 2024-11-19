@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot.RobotRunType;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveReal;
@@ -27,9 +28,11 @@ public class RobotContainer {
 
     /* Controllers */
     public final CommandXboxController driver = new CommandXboxController(Constants.DRIVER_ID);
+    public final CommandXboxController operator = new CommandXboxController(Constants.OPERATOR_ID);
 
     /* Subsystems */
     private Swerve s_Swerve;
+    private Elevator elevator;
 
     /**
      */
@@ -37,6 +40,7 @@ public class RobotContainer {
         switch (runtimeType) {
             case kReal:
                 s_Swerve = new Swerve(new SwerveReal());
+                elevator = new Elevator();
                 break;
             case kSimulation:
                 s_Swerve = new Swerve(new SwerveSim());
@@ -51,6 +55,7 @@ public class RobotContainer {
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
+        elevator.setDefaultCommand(elevator.driveElevator(() -> operator.getLeftY()));
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -66,6 +71,7 @@ public class RobotContainer {
 
         /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
+        operator.a().whileTrue(elevator.setPosition(0.5));
     }
 
     /**
