@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -52,6 +53,7 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
         // Configure the button bindings
+        CanandEventLoop.getInstance();
         configureButtonBindings();
     }
 
