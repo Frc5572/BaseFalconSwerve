@@ -89,4 +89,23 @@ public class SwerveModuleSim implements SwerveModuleIO {
         driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
+
+    @Override
+    public void setDriveMotorPower(double power) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDriveMotorPower'");
+    }
+
+    @Override
+    public void setAngleSelectedSensorPosition(double angle) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException(
+            "Unimplemented method 'setAngleSelectedSensorPosition'");
+    }
+
+    @Override
+    public void setPositionAngleMotor(double absolutePosition) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPositionAngleMotor'");
+    }
 }

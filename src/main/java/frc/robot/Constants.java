@@ -212,7 +212,7 @@ public final class Constants {
 
         /* Module Gear Ratios */
         public static final double driveGearRatio = (8.14 / 1.0); // MK4i L1
-        public static final double angleGearRatio = ((150.0 / 7.0) / 1.0); // (150 / 7) : 1
+        public static final double angleGearRatio = (12.8 / 1.0); // (150 / 7) : 1
 
         /* Motor Inverts */
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -278,7 +278,7 @@ public final class Constants {
             public static final int angleMotorID = 6;
             public static final int canCoderID = 4;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(183.955078125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.376953 + 0.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.376221 + 0.75);
 
         }
 
@@ -290,7 +290,7 @@ public final class Constants {
             public static final int angleMotorID = 5;
             public static final int canCoderID = 3;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(325.01953125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.357178);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.355957 + 0.25);
 
         }
 
@@ -302,7 +302,7 @@ public final class Constants {
             public static final int angleMotorID = 7;
             public static final int canCoderID = 2;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(124.62890625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.278809);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.223145 + 0.75);
 
         }
 
@@ -314,7 +314,7 @@ public final class Constants {
             public static final int angleMotorID = 8;
             public static final int canCoderID = 1;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(295.400390625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.409180 + 0.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.095459 + 0.25);
         }
 
         public static final HolonomicPathFollowerConfig pathFollowerConfig =

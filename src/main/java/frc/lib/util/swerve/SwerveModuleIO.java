@@ -16,18 +16,18 @@ public interface SwerveModuleIO {
         // public double angleMotorTemp;
     }
 
-    public default void setModNumber(int number) {}
+    public void setModNumber(int number);
 
-    public default void updateInputs(SwerveModuleInputs inputs) {}
+    public void updateInputs(SwerveModuleInputs inputs);
 
-    public default void setDriveMotor(double mps) {}
+    public void setDriveMotor(double mps);
 
-    public default void setDriveMotorPower(double power) {}
+    public void setDriveMotorPower(double power);
 
-    public default void setAngleMotor(double angle) {}
+    public void setAngleMotor(double angle);
 
-    public default void setAngleSelectedSensorPosition(double angle) {}
+    public void setAngleSelectedSensorPosition(double angle);
 
-    public default void setPositionAngleMotor(double absolutePosition) {}
+    public void setPositionAngleMotor(double absolutePosition);
 
 }
