@@ -3,8 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.swerve.Swerve;
 
 /**
  * Zeros motors then executes normal wait command.
@@ -19,15 +18,15 @@ public class ZeroMotorsWaitCommand extends Command {
      *
      * @param seconds how long the wait command should run
      */
-    public ZeroMotorsWaitCommand(double seconds) {
+    public ZeroMotorsWaitCommand(double seconds, Swerve swerve) {
         this.m_duration = seconds;
         SendableRegistry.setName(this, getName() + ": " + seconds + " seconds");
-        this.s_Swerve = new Swerve();
+        this.s_Swerve = swerve;
     }
 
     @Override
     public void initialize() {
-        s_Swerve.setMotorsZero(Constants.Swerve.isOpenLoop, Constants.Swerve.isFieldRelative);
+        s_Swerve.setMotorsZero();
         m_timer.reset();
         m_timer.start();
     }
