@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.util.FieldConstants;
+import frc.robot.subsystems.swerve.Swerve.SwerveGyro;
 
 /**
  * Constants file.
@@ -188,7 +189,11 @@ public final class Constants {
 
         public static final edu.wpi.first.wpilibj.SPI.Port navXID =
             edu.wpi.first.wpilibj.SPI.Port.kMXP;
-        public static final boolean invertGyro = true;
+
+        public static final SwerveGyro selectedGyro =
+            frc.robot.subsystems.swerve.Swerve.SwerveGyro.CANAND;
+        public static final boolean invertGyro = true; // Not inverted to use with CANand Gyro,
+                                                       // invert for NavX
         public static final boolean isFieldRelative = true;
         public static final boolean isOpenLoop = false;
 
@@ -215,7 +220,8 @@ public final class Constants {
         public static final double angleGearRatio = (12.8 / 1.0); // (150 / 7) : 1
 
         /* Motor Inverts */
-        public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue angleMotorInvert =
+            InvertedValue.CounterClockwise_Positive;
         public static final InvertedValue driveMotorInvert =
             InvertedValue.CounterClockwise_Positive;
 
@@ -259,8 +265,8 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 10.0;
-        public static final double AUTO_MAX_SPEED = 3.0;
+        public static final double maxSpeed = 1;
+        public static final double AUTO_MAX_SPEED = 1;
         /** Radians per Second */
         public static final double maxAngularVelocity = 15.0;
 
@@ -278,7 +284,7 @@ public final class Constants {
             public static final int angleMotorID = 6;
             public static final int canCoderID = 4;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(183.955078125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.376221 + 0.75);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.37451171875);
 
         }
 
@@ -290,7 +296,7 @@ public final class Constants {
             public static final int angleMotorID = 5;
             public static final int canCoderID = 3;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(325.01953125);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.355957 + 0.25);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.146728515625);
 
         }
 
@@ -302,7 +308,7 @@ public final class Constants {
             public static final int angleMotorID = 7;
             public static final int canCoderID = 2;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(124.62890625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.223145 + 0.75);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.219970703125);
 
         }
 
@@ -314,7 +320,7 @@ public final class Constants {
             public static final int angleMotorID = 8;
             public static final int canCoderID = 1;
             // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(295.400390625);
-            public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.095459 + 0.25);
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.40771484375);
         }
 
         public static final HolonomicPathFollowerConfig pathFollowerConfig =

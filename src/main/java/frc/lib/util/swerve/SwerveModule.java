@@ -111,6 +111,19 @@ public class SwerveModule {
     }
 
     /**
+     * Get the current Swerve Module State
+     *
+     * @return The current {@link SwerveModuleState}
+     */
+    public SwerveModuleState getStateAbs() {
+        return new SwerveModuleState(
+            Conversions.rotationPerSecondToMetersPerSecond(inputs.driveMotorSelectedSensorVelocity,
+                Constants.Swerve.wheelCircumference),
+            Rotation2d.fromRotations(
+                inputs.absolutePositionAngleEncoder - this.angleOffset.getRotations()));
+    }
+
+    /**
      * Get the current Swerve Module Position
      *
      * @return The current {@link SwerveModulePosition}

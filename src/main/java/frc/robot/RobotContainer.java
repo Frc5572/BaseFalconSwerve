@@ -53,7 +53,7 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
         // Configure the button bindings
-        CanandEventLoop.getInstance();
+        // CanandEventLoop.getInstance();
         configureButtonBindings();
     }
 

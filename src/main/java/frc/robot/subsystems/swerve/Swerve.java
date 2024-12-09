@@ -35,6 +35,10 @@ public class Swerve extends SubsystemBase {
     private SwerveIO swerveIO;
 
 
+    public enum SwerveGyro {
+        NAVX, CANAND
+    }
+
     /**
      * Swerve Subsystem
      */
@@ -132,6 +136,15 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    @AutoLogOutput(key = "Absolute States")
+    public SwerveModuleState[] gModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (SwerveModule mod : swerveMods) {
+            states[mod.moduleNumber] = mod.getStateAbs();
+        }
+        return states;
+    }
+
     /**
      * Get Swerve Module Positions
      *
@@ -180,9 +193,21 @@ public class Swerve extends SubsystemBase {
      * @return Current rotation/yaw of gyro as {@link Rotation2d}
      */
     public Rotation2d getGyroYaw() {
-        float yaw = inputs.yaw;
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
-            : Rotation2d.fromDegrees(yaw);
+        Rotation2d robotYaw = switch (Constants.Swerve.selectedGyro) {
+            case NAVX -> {
+                float yaw = inputs.yaw;
+                yield (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-yaw)
+                    : Rotation2d.fromDegrees(yaw);
+
+            }
+            case CANAND -> {
+                double yaw = inputs.newyaw;
+                yield Rotation2d.fromRotations(yaw);
+
+            }
+            default -> new Rotation2d();
+        };
+        return robotYaw;
     }
 
     /**

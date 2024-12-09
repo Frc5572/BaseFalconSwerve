@@ -15,6 +15,10 @@ public interface SwerveIO {
         public float yaw;
         public float roll;
         public float pitch;
+
+        public double newyaw;
+        public double newroll;
+        public double newpitch;
     }
 
     public default void updateInputs(SwerveInputs inputs) {}
