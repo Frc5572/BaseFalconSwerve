@@ -192,8 +192,9 @@ public final class Constants {
 
         public static final SwerveGyro selectedGyro =
             frc.robot.subsystems.swerve.Swerve.SwerveGyro.CANAND;
-        public static final boolean invertGyro = true; // Not inverted to use with CANand Gyro,
-                                                       // invert for NavX
+        // Not inverted to use with CANand Gyro,
+        // invert for NavX
+        public static final boolean invertGyro = true;
         public static final boolean isFieldRelative = true;
         public static final boolean isOpenLoop = false;
 

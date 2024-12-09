@@ -35,6 +35,9 @@ public class Swerve extends SubsystemBase {
     private SwerveIO swerveIO;
 
 
+    /**
+     * Gyro
+     */
     public enum SwerveGyro {
         NAVX, CANAND
     }
@@ -136,6 +139,11 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    /**
+     * Get states based on ABS encoders
+     *
+     * @return SwerveModuleStates
+     */
     @AutoLogOutput(key = "Absolute States")
     public SwerveModuleState[] gModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];

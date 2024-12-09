@@ -160,19 +160,16 @@ public class SwerveModuleReal implements SwerveModuleIO {
 
     @Override
     public void setModNumber(int number) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setModNumber'");
     }
 
     @Override
     public void setDriveMotorPower(double power) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setDriveMotorPower'");
     }
 
     @Override
     public void setAngleSelectedSensorPosition(double angle) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException(
             "Unimplemented method 'setAngleSelectedSensorPosition'");
     }
