@@ -65,19 +65,19 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-configurations.all {
-    exclude group: "edu.wpi.first.wpilibj"
-}
+// configurations.all {
+//     exclude group: "edu.wpi.first.wpilibj"
+// }
 
-task(checkAkitInstall, dependsOn: "classes", type: JavaExec) {
-    mainClass = "org.littletonrobotics.junction.CheckInstall"
-    classpath = sourceSets.main.runtimeClasspath
-}
-compileJava.finalizedBy checkAkitInstall
+// task(checkAkitInstall, dependsOn: "classes", type: JavaExec) {
+//     mainClass = "org.littletonrobotics.junction.CheckInstall"
+//     classpath = sourceSets.main.runtimeClasspath
+// }
+// compileJava.finalizedBy checkAkitInstall
 
 dependencies {
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
-    annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()

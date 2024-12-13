@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerve;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -55,9 +54,10 @@ public class Swerve extends SubsystemBase {
 
         swerveIO.updateInputs(inputs);
 
-        AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getChassisSpeeds,
-            this::setModuleStates, Constants.Swerve.pathFollowerConfig, () -> shouldFlipPath(),
-            this);
+        // AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry,
+        // this::getChassisSpeeds,
+        // this::setModuleStates, Constants.Swerve.pathFollowerConfig, () -> shouldFlipPath(),
+        // this);
 
         // Logging callback for target robot pose
         PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
@@ -83,10 +83,11 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
         Robot.profiler.push("swerve.drive()");
-        ChassisSpeeds chassisSpeeds = fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
-                rotation, getFieldRelativeHeading())
-            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        ChassisSpeeds chassisSpeeds =
+            new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        if (fieldRelative) {
+            chassisSpeeds.toRobotRelativeSpeeds(getFieldRelativeHeading());
+        }
 
         setModuleStates(chassisSpeeds);
         Robot.profiler.pop();
@@ -111,9 +112,9 @@ public class Swerve extends SubsystemBase {
      * @param chassisSpeeds The desired Chassis Speeds
      */
     public void setModuleStates(ChassisSpeeds chassisSpeeds) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+        chassisSpeeds.discretize(0.02);
         SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(swerveModuleStates);
     }
 

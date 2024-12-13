@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;

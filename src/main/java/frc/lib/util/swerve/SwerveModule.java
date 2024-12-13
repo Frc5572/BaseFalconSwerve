@@ -56,7 +56,7 @@ public class SwerveModule {
      * @param isOpenLoop Whether the state should be open or closed loop controlled
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+        desiredState.optimize(getState().angle);
         io.setAngleMotor(desiredState.angle.getRotations());
         setSpeed(desiredState, isOpenLoop);
         SmartDashboard.putNumber("desired state speed/" + moduleNumber,

@@ -118,7 +118,7 @@ public class Robot extends LoggedRobot {
      * SmartDashboard integrated updating.
      */
 
-    @Override
+    // @Override
     public void robotPeriodic() {
         if (hasStarted) {
             // // profiler.endTick();
@@ -151,16 +151,16 @@ public class Robot extends LoggedRobot {
         // profiler.pop();
     }
 
-    @Override
+    // @Override
     public void disabledInit() {}
 
-    @Override
+    // @Override
     public void disabledPeriodic() {}
 
     /**
      * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
      */
-    @Override
+    // @Override
     public void autonomousInit() {
         hasDoneSomething = true;
         // profiler.push("autonomousInit()");
@@ -177,10 +177,10 @@ public class Robot extends LoggedRobot {
     }
 
     /** This function is called periodically during autonomous. */
-    @Override
+    // @Override
     public void autonomousPeriodic() {}
 
-    @Override
+    // @Override
     public void teleopInit() {
         hasDoneSomething = true;
         // profiler.push("teleopInit()");
@@ -192,23 +192,23 @@ public class Robot extends LoggedRobot {
     }
 
     /** This function is called periodically during operator control. */
-    @Override
+    // @Override
     public void teleopPeriodic() {
         // robotContainer.elevatorWrist.setWristPower(robotContainer.driver.getRightY() * 0.2);
         // vision.update();
     }
 
-    @Override
+    // @Override
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
 
     /** This function is called periodically during test mode. */
-    @Override
+    // @Override
     public void testPeriodic() {}
 
-    @Override
+    // @Override
     public void simulationPeriodic() {}
 
 
