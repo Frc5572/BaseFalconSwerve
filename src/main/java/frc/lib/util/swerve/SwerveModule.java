@@ -34,7 +34,6 @@ public class SwerveModule {
 
         // lastAngle = getState().angle.getDegrees();
         io.updateInputs(inputs);
-        resetToAbsolute();
         Logger.processInputs("SwerveModule" + moduleNumber, inputs);
     }
 
@@ -119,8 +118,7 @@ public class SwerveModule {
         return new SwerveModuleState(
             Conversions.rotationPerSecondToMetersPerSecond(inputs.driveMotorSelectedSensorVelocity,
                 Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(
-                inputs.absolutePositionAngleEncoder - this.angleOffset.getRotations()));
+            Rotation2d.fromRotations(inputs.absolutePositionAngleEncoder));
     }
 
     /**

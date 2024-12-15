@@ -11,6 +11,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.lib.math.Conversions;
@@ -40,9 +42,13 @@ public class SwerveModuleReal implements SwerveModuleIO {
     /* angle motor control requests */
     private final PositionVoltage anglePosition = new PositionVoltage(0);
 
-    /** Instantiating motors and Encoders */
-    public SwerveModuleReal(int driveMotorID, int angleMotorID, int cancoderID) {
+    private final Rotation2d angleOffset;
 
+    /** Instantiating motors and Encoders */
+    public SwerveModuleReal(int driveMotorID, int angleMotorID, int cancoderID,
+        Rotation2d cancoderOffset) {
+
+        this.angleOffset = cancoderOffset;
         angleEncoder = new CANcoder(cancoderID);
         mDriveMotor = new TalonFX(driveMotorID);
         mAngleMotor = new TalonFX(angleMotorID);
@@ -63,8 +69,12 @@ public class SwerveModuleReal implements SwerveModuleIO {
         swerveAngleFXConfig.MotorOutput.Inverted = Constants.Swerve.angleMotorInvert;
         swerveAngleFXConfig.MotorOutput.NeutralMode = Constants.Swerve.angleNeutralMode;
 
+
         /* Gear Ratio and Wrapping Config */
-        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.angleGearRatio;
+        swerveAngleFXConfig.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
+        swerveAngleFXConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = 1.0;
+        swerveAngleFXConfig.Feedback.RotorToSensorRatio = Constants.Swerve.angleGearRatio;
         swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
         /* Current Limiting */
@@ -127,6 +137,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
     private void configAngleEncoder() {
         /* Angle Encoder Config */
         swerveCANcoderConfig.MagnetSensor.SensorDirection = Constants.Swerve.cancoderInvert;
+        swerveCANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+        swerveCANcoderConfig.MagnetSensor.MagnetOffset = -angleOffset.getRotations();
 
         angleEncoder.getConfigurator().apply(swerveCANcoderConfig);
     }
