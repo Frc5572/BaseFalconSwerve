@@ -67,6 +67,8 @@ public class RobotContainer {
 
         /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
+
+        driver.x().whileTrue(s_Swerve.runNeo(1));
     }
 
     /**
