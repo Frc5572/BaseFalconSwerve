@@ -1,7 +1,6 @@
 package frc.lib.util.swerve;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,7 +8,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,9 +64,9 @@ public class SwerveModuleSim implements SwerveModuleIO {
         double rpm = Conversions.metersPerSecondToRotationPerSecond(mps,
             Constants.Swerve.wheelCircumference);
         driveFeedback.setSetpoint(rpm);
-        Voltage driveFF = driveFeedforward.calculate(MetersPerSecond.of(mps));
-        SmartDashboard.putNumber("ff/" + moduleNumber, driveFF.in(Volts));
-        double volts = driveFeedback.calculate(mps) + driveFF.in(Volts);
+        double driveFF = driveFeedforward.calculate(MetersPerSecond.of(mps).magnitude());
+        SmartDashboard.putNumber("ff/" + moduleNumber, driveFF);
+        double volts = driveFeedback.calculate(mps) + driveFF;
         if (rpm == 0) {
             volts = 0;
         }

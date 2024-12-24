@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -88,7 +89,8 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds chassisSpeeds =
             new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
         if (fieldRelative) {
-            chassisSpeeds.toRobotRelativeSpeeds(getFieldRelativeHeading());
+            chassisSpeeds =
+                ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getFieldRelativeHeading());
         }
 
         setModuleStates(chassisSpeeds);
@@ -114,7 +116,9 @@ public class Swerve extends SubsystemBase {
      * @param chassisSpeeds The desired Chassis Speeds
      */
     public void setModuleStates(ChassisSpeeds chassisSpeeds) {
-        chassisSpeeds.discretize(0.02);
+        chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond,
+            LoggedRobot.defaultPeriodSecs);
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(swerveModuleStates);

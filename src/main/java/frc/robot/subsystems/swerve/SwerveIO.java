@@ -22,6 +22,8 @@ public interface SwerveIO {
 
         public double neoPosition;
         public double neoVelocity;
+
+        public boolean camera1Connected;
     }
 
     public default void updateInputs(SwerveInputs inputs) {}
