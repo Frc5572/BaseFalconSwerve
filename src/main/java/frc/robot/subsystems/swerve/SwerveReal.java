@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import org.photonvision.PhotonCamera;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -25,8 +24,6 @@ public class SwerveReal implements SwerveIO {
     private SparkMax neo = new SparkMax(60, MotorType.kBrushless);
     private RelativeEncoder neoEncoder = neo.getEncoder();
 
-    private PhotonCamera camera1 = new PhotonCamera("camera1");
-
     /** Real Swerve Initializer */
     public SwerveReal() {
         SparkBaseConfig neoConfig = new SparkMaxConfig().inverted(true).idleMode(IdleMode.kCoast);
@@ -46,7 +43,7 @@ public class SwerveReal implements SwerveIO {
         inputs.neoPosition = neoEncoder.getPosition();
         inputs.neoVelocity = neoEncoder.getVelocity();
 
-        inputs.camera1Connected = camera1.isConnected();
+        // inputs.camera1Connected = camera1.isConnected();
     }
 
     public SwerveModule createSwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,

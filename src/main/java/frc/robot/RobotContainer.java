@@ -12,6 +12,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveReal;
 import frc.robot.subsystems.swerve.SwerveSim;
+import frc.robot.subsystems.vision.Vision;
 
 
 /**
@@ -30,10 +31,12 @@ public class RobotContainer {
 
     /* Subsystems */
     private Swerve s_Swerve;
+    private Vision s_Vision = new Vision();
 
     /**
      */
     public RobotContainer(RobotRunType runtimeType) {
+
         switch (runtimeType) {
             case kReal:
                 s_Swerve = new Swerve(new SwerveReal());
