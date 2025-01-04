@@ -1,9 +1,10 @@
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.VisionTargetSim;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -12,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystems.vision.AprilTagCamera.Resolution;
 
 /**
@@ -25,8 +27,9 @@ public class ObjectCamera implements AutoCloseable {
     private PhotonCameraSim m_cameraSim;
     private Transform3d m_transform;
     private VisionTargetSim m_targetSim;
-    private List<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
-    PhotonTrackedTarget bestTarget = null;
+    Optional<PhotonTrackedTarget> bestTarget = null;
+    boolean hasTargets = false;
+    int counter = 0;
 
     /**
      * Create Object Camera
@@ -56,7 +59,16 @@ public class ObjectCamera implements AutoCloseable {
     }
 
     public void periodic() {
-        results = m_camera.getAllUnreadResults();
+        List<PhotonPipelineResult> results = m_camera.getAllUnreadResults();
+        Logger.recordOutput("Object/ResultEmpty", results.isEmpty());
+        if (!results.isEmpty()) {
+            PhotonPipelineResult recent = results.get(results.size() - 1);
+            Logger.recordOutput("Object/Result", recent);
+            if (recent.hasTargets()) {
+                hasTargets = true;
+                bestTarget = Optional.of(recent.getBestTarget());
+            }
+        }
     }
 
     /**
@@ -77,61 +89,54 @@ public class ObjectCamera implements AutoCloseable {
         return m_cameraSim;
     }
 
-    public Optional<PhotonTrackedTarget> getBestTarget() {
-        Optional<List<PhotonPipelineResult>> results = getLatestResults();
-        if (!results.isPresent()
-            || results.get().stream().filter(x -> x.hasTargets()).toList().size() == 0)
-            return Optional.empty();
+    // public Optional<PhotonTrackedTarget> getBestTarget() {
+    // List<PhotonTrackedTarget> targets = m_camera.getLatestResult().getTargets();
 
-        results.get().stream().forEach(result -> {
-            List<PhotonTrackedTarget> targets = result.getTargets();
+    // PhotonTrackedTarget bestTarget = null;
+    // double bestTargetScore = Double.MAX_VALUE; // lower is better
+    // for (var target : targets) {
+    // double avgX = 0, avgY = 0;
+    // int count = 0;
 
-            double bestTargetScore = Double.MAX_VALUE; // lower is better
-            for (var target : targets) {
-                double avgX = 0, avgY = 0;
-                int count = 0;
+    // for (var corner : target.getMinAreaRectCorners()) {
+    // avgX += corner.x;
+    // avgY += corner.y;
+    // count++;
+    // }
+    // avgX /= count;
+    // avgY /= count;
 
-                for (var corner : target.getMinAreaRectCorners()) {
-                    avgX += corner.x;
-                    avgY += corner.y;
-                    count++;
-                }
-                avgX /= count;
-                avgY /= count;
+    // double score = Math.hypot(avgX - (m_resolution.width / 2), avgY - m_resolution.height);
 
-                // TODO get frame size from photonvision
-                double score = Math.hypot(avgX - (1920 / 2), avgY - 1080);
 
-                if (score < bestTargetScore) {
-                    bestTarget = target;
-                    bestTargetScore = score;
-                }
-            }
-        });
-        if (bestTarget == null)
-            return Optional.empty();
-        return Optional.of(bestTarget);
-    }
+    // if (score < bestTargetScore) {
+    // bestTarget = target;
+    // bestTargetScore = score;
+    // }
+    // }
+
+    // if (bestTarget == null)
+    // return Optional.empty();
+    // return Optional.of(bestTarget);
+    // }
 
     /**
      * Get distance to game object
      *
      * @return Distance to object, empty if undetected
      */
-    // public Optional<Distance> getDistance() {
-    // if (getObjectArea().orElse(0.0) < MIN_OBJECT_AREA)
-    // return Optional.empty();
+    public Optional<Distance> getDistance() {
+        if (!hasTargets || !bestTarget.isPresent()
+            || getObjectArea().orElse(0.0) < MIN_OBJECT_AREA) {
+            return Optional.empty();
+        }
 
-    // Optional<PhotonPipelineResult> result = getLatestResult();
-    // if (!result.isPresent() || !result.get().hasTargets())
-    // return Optional.empty();
+        double range = PhotonUtils.calculateDistanceToTargetMeters(m_transform.getZ(),
+            TARGET_HEIGHT_METERS, -m_transform.getRotation().getY(),
+            Units.Degrees.of(bestTarget.get().getPitch()).in(Units.Radians));
 
-    // double range = PhotonUtils.calculateDistanceToTargetMeters(m_transform.getZ(),
-    // TARGET_HEIGHT_METERS, -m_transform.getRotation().getY(),
-    // Units.Degrees.of(result.get().getBestTarget().getPitch()).in(Units.Radians));
-
-    // return Optional.of(Units.Meters.of(range));
-    // }
+        return Optional.of(Units.Meters.of(range));
+    }
 
     /**
      * Get yaw angle to target
@@ -139,13 +144,11 @@ public class ObjectCamera implements AutoCloseable {
      * @return Yaw angle to target, empty if undetected
      */
     public Optional<Angle> getYaw() {
-        Optional<PhotonTrackedTarget> target = getBestTarget();
-        if (!target.isPresent()) {
+        if (!hasTargets || !bestTarget.isPresent()
+            || getObjectArea().orElse(0.0) < MIN_OBJECT_AREA) {
             return Optional.empty();
         }
-        if (target.get().getArea() < MIN_OBJECT_AREA)
-            return Optional.empty();
-        return Optional.of(Units.Degrees.of(target.get().getYaw()));
+        return Optional.of(Units.Degrees.of(bestTarget.get().getYaw()));
     }
 
     /**
@@ -157,38 +160,24 @@ public class ObjectCamera implements AutoCloseable {
         return m_transform;
     }
 
-    // public Optional<Double> getObjectArea() {
-    // Optional<PhotonTrackedTarget> target = getBestTarget();
-    // if (!target.isPresent()) {
-    // return Optional.empty();
-    // }
-    // return Optional.of(target.get().getArea());
-    // }
-
-    public boolean objectIsVisible() {
-        Optional<List<PhotonPipelineResult>> result = getLatestResults();
-        return result.isPresent() && result.get().stream().anyMatch(x -> x.hasTargets());
-    }
-
-    public Optional<List<PhotonPipelineResult>> getLatestResults() {
-        if (results.size() > 0) {
-            return Optional.of(results);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<PhotonTrackedTarget> getLatestTargets() {
-        Optional<List<PhotonPipelineResult>> result = getLatestResults();
-        if (!result.isPresent()) {
+    public Optional<Double> getObjectArea() {
+        if (!hasTargets || !bestTarget.isPresent()) {
             return Optional.empty();
         }
-        List<PhotonPipelineResult> targets =
-            result.get().stream().filter(x -> x.hasTargets()).toList();
-        if (targets.size() > 0) {
-            return Optional.of(targets.get(0).getBestTarget());
-        }
-        return Optional.empty();
+        return Optional.of(bestTarget.get().getArea());
     }
+
+
+    public boolean objectIsVisible() {
+        return hasTargets;
+    }
+
+    // public Optional<PhotonPipelineResult> getLatestResult() {
+    // if (results.isEmpty()) {
+    // return Optional.empty();
+    // }
+    // return Optional.of(results.get(results.size() - 1));
+    // }
 
     @Override
     public void close() {
