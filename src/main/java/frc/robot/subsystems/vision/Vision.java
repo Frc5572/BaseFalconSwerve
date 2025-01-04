@@ -16,10 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,7 +32,7 @@ public class Vision extends SubsystemBase {
     private static final String OBJECT_POSE_LOG_ENTRY = "/ObjectPose";
     private static final String OBJECT_DETECTED_LOG_ENTRY = "/ObjectDetected";
 
-    private static final double INTAKE_YAW_TOLERANCE = 1;
+    private static final double INTAKE_YAW_TOLERANCE = 10;
 
     private AtomicReference<List<AprilTagCameraResult>> m_estimatedRobotPoses;
     private AtomicReference<List<AprilTag>> m_visibleTags;
@@ -50,11 +47,13 @@ public class Vision extends SubsystemBase {
     // private VisionSystemSim m_sim;
     private AprilTagCamera camera1 =
         new AprilTagCamera("camera1", new Transform3d(), Resolution.RES_1280_720, new Rotation2d());
+    private ObjectCamera camera2 =
+        new ObjectCamera("camera2", new Transform3d(), Resolution.RES_320_240, new Rotation2d());
 
 
     public Vision() {
         this.m_apriltagCameras = new AprilTagCamera[] {camera1};
-        // this.m_objectCamera = new AprilTagCamera[] {camera2};
+        this.m_objectCamera = camera2;
         this.m_estimatedRobotPoses = new AtomicReference<List<AprilTagCameraResult>>();
         this.m_visibleTags = new AtomicReference<List<AprilTag>>();
         this.m_loggedEstimatedPoses = new AtomicReference<List<Pose2d>>();
@@ -126,6 +125,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        camera2.periodic();
         List<AprilTagCameraResult> results = getEstimatedGlobalPoses();
         if (results != null) {
             results.stream().sorted(Comparator.comparingDouble(AprilTagCameraResult::timestamp))
@@ -137,7 +137,9 @@ public class Vision extends SubsystemBase {
         // getObjectLocation().isPresent());
         // if (objectLocation.isEmpty())
         // return;
-        // Logger.recordOutput(getName() + "/shouldIntake", shouldIntake());
+        Logger.recordOutput(getName() + "/shouldIntake", shouldIntake());
+        Logger.recordOutput(getName() + "/objectVisible", objectIsVisible());
+
         // Logger.recordOutput(getName() + OBJECT_POSE_LOG_ENTRY, objectLocation.get());
     }
 
@@ -180,33 +182,33 @@ public class Vision extends SubsystemBase {
      *
      * @return The position of the object, relative to the field
      */
-    public Optional<Translation2d> getObjectLocation() {
+    // public Optional<Translation2d> getObjectLocation() {
 
-        Optional<Angle> yaw = m_objectCamera.getYaw();
-        Optional<Distance> distance = m_objectCamera.getDistance();
-        Pose2d pose = m_poseSupplier.get();
-        if (yaw.isEmpty() || distance.isEmpty() || pose == null)
-            return Optional.empty();
+    // Optional<Angle> yaw = m_objectCamera.getYaw();
+    // Optional<Distance> distance = m_objectCamera.getDistance();
+    // Pose2d pose = m_poseSupplier.get();
+    // if (yaw.isEmpty() || distance.isEmpty() || pose == null)
+    // return Optional.empty();
 
-        Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
-        Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
-        return Optional.of(pose.getTranslation().plus(new Translation2d(
-            // distance.get().in(Units.Meters),
-            1, Rotation2d
-                .fromRadians(pose.getRotation().getRadians() - yaw.get().in(Units.Radians)))));
-    }
+    // Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
+    // Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
+    // return Optional.of(pose.getTranslation().plus(new Translation2d(
+    // // distance.get().in(Units.Meters),
+    // 1, Rotation2d
+    // .fromRadians(pose.getRotation().getRadians() - yaw.get().in(Units.Radians)))));
+    // }
 
     /**
      * Gets the object heading, relative to the camera.
      *
      * @return the heading
      */
-    public Optional<Angle> getObjectHeading() {
-        Optional<Angle> yaw = m_objectCamera.getYaw();
-        if (yaw.isEmpty())
-            return Optional.empty();
-        return yaw;
-    }
+    // public Optional<Angle> getObjectHeading() {
+    // Optional<Angle> yaw = m_objectCamera.getYaw();
+    // if (yaw.isEmpty())
+    // return Optional.empty();
+    // return yaw;
+    // }
 
     public boolean shouldIntake() {
         if (!m_objectCamera.objectIsVisible())
