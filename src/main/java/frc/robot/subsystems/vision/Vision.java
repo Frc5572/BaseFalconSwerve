@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -203,12 +204,12 @@ public class Vision extends SubsystemBase {
      *
      * @return the heading
      */
-    // public Optional<Angle> getObjectHeading() {
-    // Optional<Angle> yaw = m_objectCamera.getYaw();
-    // if (yaw.isEmpty())
-    // return Optional.empty();
-    // return yaw;
-    // }
+    public Optional<Angle> getObjectHeading() {
+        Optional<Angle> yaw = m_objectCamera.getYaw();
+        if (yaw.isEmpty())
+            return Optional.empty();
+        return yaw;
+    }
 
     public boolean shouldIntake() {
         if (!m_objectCamera.objectIsVisible())

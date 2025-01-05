@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot.RobotRunType;
+import frc.robot.commands.CommandFactory;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.swerve.Swerve;
@@ -82,6 +83,9 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
 
         driver.x().whileTrue(s_Swerve.runNeo(1));
+
+        driver.a()
+            .whileTrue(CommandFactory.rotateToGamePiece(s_Swerve, s_Vision::getObjectHeading));
     }
 
     /**
