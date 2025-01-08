@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.subsystems.vision.AprilTagCamera.AprilTagCameraResult;
 
 
 public class RobotState {
@@ -56,9 +55,9 @@ public class RobotState {
         swerveOdometry.update(observation.gyroAngle(), observation.wheelPositions());
     }
 
-    public void addVisionObservation(AprilTagCameraResult observation) {
-        swerveOdometry.addVisionMeasurement(observation.estimatedRobotPose.estimatedPose.toPose2d(),
-            observation.timestamp, observation.visionMeasurementStdDevs);
-        System.out.println("Adding Vision Observation for " + observation);
-    }
+    // public void addVisionObservation(AprilTagCameraResult observation) {
+    // swerveOdometry.addVisionMeasurement(observation.estimatedRobotPose.estimatedPose.toPose2d(),
+    // observation.timestamp, observation.visionMeasurementStdDevs);
+    // System.out.println("Adding Vision Observation for " + observation);
+    // }
 }

@@ -9,14 +9,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot.RobotRunType;
-import frc.robot.commands.CommandFactory;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveReal;
 import frc.robot.subsystems.swerve.SwerveSim;
-import frc.robot.subsystems.vision.Vision;
 
 
 /**
@@ -38,7 +36,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private Swerve s_Swerve;
-    private Vision s_Vision = new Vision();
+    // private Vision s_Vision = new Vision();
     private LEDs s_LEDs1 = new LEDs(m_left);
     private LEDs s_LEDs2 = new LEDs(m_right);
 
@@ -84,8 +82,8 @@ public class RobotContainer {
 
         driver.x().whileTrue(s_Swerve.runNeo(1));
 
-        driver.a()
-            .whileTrue(CommandFactory.rotateToGamePiece(s_Swerve, s_Vision::getObjectHeading));
+        // driver.a()
+        // .whileTrue(CommandFactory.rotateToGamePiece(s_Swerve, s_Vision::getObjectHeading));
     }
 
     /**

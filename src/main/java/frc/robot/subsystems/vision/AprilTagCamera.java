@@ -1,238 +1,236 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.vision;
+// package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.util.FieldConstants;
+// import java.util.ArrayList;
+// import java.util.List;
+// import java.util.concurrent.atomic.AtomicReference;
+// import org.photonvision.EstimatedRobotPose;
+// import org.photonvision.PhotonCamera;
+// import org.photonvision.PhotonPoseEstimator;
+// import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+// import org.photonvision.targeting.PhotonPipelineResult;
+// import edu.wpi.first.apriltag.AprilTagFieldLayout;
+// import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+// import edu.wpi.first.apriltag.AprilTagFields;
+// import edu.wpi.first.math.Matrix;
+// import edu.wpi.first.math.VecBuilder;
+// import edu.wpi.first.math.geometry.Pose3d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Transform3d;
+// import edu.wpi.first.math.geometry.Translation3d;
+// import edu.wpi.first.math.numbers.N1;
+// import edu.wpi.first.math.numbers.N3;
+// import edu.wpi.first.units.measure.Distance;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import frc.lib.util.FieldConstants;
 
-/** Create a camera */
-public class AprilTagCamera implements Runnable, AutoCloseable {
-    private final double APRILTAG_POSE_AMBIGUITY_THRESHOLD = 0.2;
-    private final double POSE_MAX_HEIGHT = 0.75;
-    private final Distance MAX_TAG_DISTANCE = Units.Meters.of(100.0);
+// /** Create a camera */
+// public class AprilTagCamera implements Runnable, AutoCloseable {
+//     private final double APRILTAG_POSE_AMBIGUITY_THRESHOLD = 0.2;
+//     private final double POSE_MAX_HEIGHT = 0.75;
+//     private final Distance MAX_TAG_DISTANCE = Units.Meters.of(100.0);
 
-    public static class AprilTagCameraResult {
-        public final EstimatedRobotPose estimatedRobotPose;
-        public final Matrix<N3, N1> visionMeasurementStdDevs;
-        public final double timestamp;
+//     public static class AprilTagCameraResult {
+//         public final EstimatedRobotPose estimatedRobotPose;
+//         public final Matrix<N3, N1> visionMeasurementStdDevs;
+//         public final double timestamp;
 
-        public AprilTagCameraResult(EstimatedRobotPose estimatedRobotPose,
-            Matrix<N3, N1> visionMeasurementStdDevs, double timestamp) {
-            this.estimatedRobotPose = estimatedRobotPose;
-            this.visionMeasurementStdDevs = visionMeasurementStdDevs;
-            this.timestamp = timestamp;
-        }
+//         public AprilTagCameraResult(EstimatedRobotPose estimatedRobotPose,
+//             Matrix<N3, N1> visionMeasurementStdDevs, double timestamp) {
+//             this.estimatedRobotPose = estimatedRobotPose;
+//             this.visionMeasurementStdDevs = visionMeasurementStdDevs;
+//             this.timestamp = timestamp;
+//         }
 
-        public double timestamp() {
-            return timestamp;
-        }
+//         public double timestamp() {
+//             return timestamp;
+//         }
 
-        public Matrix<N3, N1> stdDevs() {
-            return visionMeasurementStdDevs;
-        }
+//         public Matrix<N3, N1> stdDevs() {
+//             return visionMeasurementStdDevs;
+//         }
 
-        public EstimatedRobotPose visionPose() {
-            return estimatedRobotPose;
-        }
-    }
+//         public EstimatedRobotPose visionPose() {
+//             return estimatedRobotPose;
+//         }
+//     }
 
-    public enum Resolution {
-        RES_320_240(320, 240), RES_640_480(640, 480), RES_1280_720(1280, 720), RES_1280_800(1280,
-            800), RES_1920_1080(1920, 1080);
+//     public enum Resolution {
+//         RES_320_240(320, 240), RES_640_480(640, 480), RES_1280_720(1280, 720), RES_1280_800(1280,
+//             800), RES_1920_1080(1920, 1080);
 
-        public final int width;
-        public final int height;
+//         public final int width;
+//         public final int height;
 
-        private Resolution(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
-    }
+//         private Resolution(int width, int height) {
+//             this.width = width;
+//             this.height = height;
+//         }
+//     }
 
-    private PhotonCamera m_camera;
-    // private PhotonCameraSim m_cameraSim;
-    private PhotonPoseEstimator m_poseEstimator;
-    private Transform3d m_transform;
-    private AtomicReference<List<AprilTagCameraResult>> m_atomicEstimatedRobotPose;
+//     private PhotonCamera m_camera;
+//     // private PhotonCameraSim m_cameraSim;
+//     private PhotonPoseEstimator m_poseEstimator;
+//     private Transform3d m_transform;
+//     private AtomicReference<List<AprilTagCameraResult>> m_atomicEstimatedRobotPose;
 
-    /**
-     * Create VisionCamera
-     *
-     * @param name Name of device
-     * @param transform Location on robot in meters
-     * @param resolution Resolution used by camera
-     * @param fovDiag Diagonal FOV of camera
-     */
-    public AprilTagCamera(String name, Transform3d transform, Resolution resolution,
-        Rotation2d fovDiag) {
-        this.m_camera = new PhotonCamera(name);
-        this.m_transform = transform;
-        var fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-        // PV estimates will always be blue
-        fieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        this.m_poseEstimator = new PhotonPoseEstimator(fieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_transform);
-        m_poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+//     /**
+//      * Create VisionCamera
+//      *
+//      * @param name Name of device
+//      * @param transform Location on robot in meters
+//      * @param resolution Resolution used by camera
+//      * @param fovDiag Diagonal FOV of camera
+//      */
+//     public AprilTagCamera(String name, Transform3d transform, Resolution resolution,
+//         Rotation2d fovDiag) {
+//         this.m_camera = new PhotonCamera(name);
+//         this.m_transform = transform;
+//         var fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+//         // PV estimates will always be blue
+//         fieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+//         this.m_poseEstimator = new PhotonPoseEstimator(fieldLayout,
+//             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_transform);
+//         m_poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-        this.m_atomicEstimatedRobotPose = new AtomicReference<List<AprilTagCameraResult>>();
+//         this.m_atomicEstimatedRobotPose = new AtomicReference<List<AprilTagCameraResult>>();
 
-        // Create simulated AprilTag camera
-        // var cameraProperties = SimCameraProperties.PERFECT_90DEG();
-        // cameraProperties.setCalibration(resolution.width, resolution.height, fovDiag);
-        // this.m_cameraSim = new PhotonCameraSim(m_camera, cameraProperties);
+//         // Create simulated AprilTag camera
+//         // var cameraProperties = SimCameraProperties.PERFECT_90DEG();
+//         // cameraProperties.setCalibration(resolution.width, resolution.height, fovDiag);
+//         // this.m_cameraSim = new PhotonCameraSim(m_camera, cameraProperties);
 
-        // Enable wireframe in sim camera stream
-        // m_cameraSim.enableDrawWireframe(true);
-    }
+//         // Enable wireframe in sim camera stream
+//         // m_cameraSim.enableDrawWireframe(true);
+//     }
 
-    // /**
-    // * Get camera sim
-    // *
-    // * @return Simulated camera object
-    // */
-    // PhotonCameraSim getCameraSim() {
-    // return m_cameraSim;
-    // }
+//     // /**
+//     // * Get camera sim
+//     // *
+//     // * @return Simulated camera object
+//     // */
+//     // PhotonCameraSim getCameraSim() {
+//     // return m_cameraSim;
+//     // }
 
-    /**
-     * Check if pose is valid
-     *
-     * @param pose Pose to check
-     * @return True if pose is valid
-     */
-    private boolean isEstimatedPoseValid(Pose3d pose) {
-        // Make sure pose is on the field
-        if (pose.getX() < 0.0 || pose.getX() >= FieldConstants.fieldLength || pose.getY() < 0.0
-            || pose.getY() >= FieldConstants.fieldWidth) {
+//     /**
+//      * Check if pose is valid
+//      *
+//      * @param pose Pose to check
+//      * @return True if pose is valid
+//      */
+//     private boolean isEstimatedPoseValid(Pose3d pose) {
+//         // Make sure pose is on the field
+//         if (pose.getX() < 0.0 || pose.getX() >= FieldConstants.fieldLength || pose.getY() < 0.0
+//             || pose.getY() >= FieldConstants.fieldWidth) {
 
-            System.out.println("Pose is outside field");
-            return false;
-        }
+//             System.out.println("Pose is outside field");
+//             return false;
+//         }
 
-        // Make sure pose is near the floor
-        if (pose.getZ() > POSE_MAX_HEIGHT) {
-            System.out.println("Pose is too high");
-            return false;
-        }
+//         // Make sure pose is near the floor
+//         if (pose.getZ() > POSE_MAX_HEIGHT) {
+//             System.out.println("Pose is too high");
+//             return false;
+//         }
 
-        // Pose is acceptable
-        return true;
-    }
+//         // Pose is acceptable
+//         return true;
+//     }
 
-    @Override
-    public void run() {
-        // Return if camera or field layout failed to load
-        if (m_poseEstimator == null || m_camera == null)
-            return;
+//     @Override
+//     public void run() {
+//         // Return if camera or field layout failed to load
+//         if (m_poseEstimator == null || m_camera == null)
+//             return;
 
-        // Put camera connected indicator on SmartDashboard
-        SmartDashboard.putBoolean(m_camera.getName(), m_camera.isConnected());
+//         // Put camera connected indicator on SmartDashboard
+//         SmartDashboard.putBoolean(m_camera.getName(), m_camera.isConnected());
 
-        // Return if camera is not connected
-        if (!m_camera.isConnected())
-            return;
+//         // Return if camera is not connected
+//         if (!m_camera.isConnected())
+//             return;
 
-        // Update and log inputs
-        List<PhotonPipelineResult> pipelineResults = m_camera.getAllUnreadResults();
-        var apriltagCameraResult = new ArrayList<AprilTagCameraResult>();
+//         // Update and log inputs
+//         List<PhotonPipelineResult> pipelineResults = m_camera.getAllUnreadResults();
+//         var apriltagCameraResult = new ArrayList<AprilTagCameraResult>();
 
-        pipelineResults.stream().forEach(pipelineResult -> {
-            Logger.recordOutput(m_camera.getName() + "/results", pipelineResult);
-            // Return if result is non-existent or invalid
-            if (!pipelineResult.hasTargets())
-                return;
-            if (pipelineResult.targets.size() == 1 && pipelineResult.targets.get(0)
-                .getPoseAmbiguity() > APRILTAG_POSE_AMBIGUITY_THRESHOLD)
-                return;
-            Logger.recordOutput(m_camera.getName() + "/PoseAmbiguity",
-                pipelineResult.targets.get(0).getPoseAmbiguity());
+//         pipelineResults.stream().forEach(pipelineResult -> {
+//             Logger.recordOutput(m_camera.getName() + "/results", pipelineResult);
+//             // Return if result is non-existent or invalid
+//             if (!pipelineResult.hasTargets())
+//                 return;
+//             if (pipelineResult.targets.size() == 1 && pipelineResult.targets.get(0)
+//                 .getPoseAmbiguity() > APRILTAG_POSE_AMBIGUITY_THRESHOLD)
+//                 return;
+//             Logger.recordOutput(m_camera.getName() + "/PoseAmbiguity",
+//                 pipelineResult.targets.get(0).getPoseAmbiguity());
 
-            // Update pose estimate
-            m_poseEstimator.update(pipelineResult).ifPresent(estimatedRobotPose -> {
-                // Make sure the measurement is valid
-                if (!isEstimatedPoseValid(estimatedRobotPose.estimatedPose))
-                    return;
+//             // Update pose estimate
+//             m_poseEstimator.update(pipelineResult).ifPresent(estimatedRobotPose -> {
+//                 // Make sure the measurement is valid
+//                 if (!isEstimatedPoseValid(estimatedRobotPose.estimatedPose))
+//                     return;
 
-                // Get distance to closest tag
-                var closestTagDistance = MAX_TAG_DISTANCE;
-                for (var target : estimatedRobotPose.targetsUsed) {
-                    var tagDistance = Units.Meters.of(target.getBestCameraToTarget()
-                        .getTranslation().getDistance(new Translation3d()));
-                    if (tagDistance.lte(closestTagDistance))
-                        closestTagDistance = tagDistance;
-                }
+//                 // Get distance to closest tag
+//                 var closestTagDistance = MAX_TAG_DISTANCE;
+//                 for (var target : estimatedRobotPose.targetsUsed) {
+//                     var tagDistance = Units.Meters.of(target.getBestCameraToTarget()
+//                         .getTranslation().getDistance(new Translation3d()));
+//                     if (tagDistance.lte(closestTagDistance))
+//                         closestTagDistance = tagDistance;
+//                 }
 
-                // Calculate standard deviation
-                double xyStdDev = 0.01 * Math.pow(closestTagDistance.in(Units.Meters), 2.0)
-                    / estimatedRobotPose.targetsUsed.size();
-                double thetaStdDev = 0.01 * Math.pow(closestTagDistance.in(Units.Meters), 2.0)
-                    / estimatedRobotPose.targetsUsed.size();
+//                 // Calculate standard deviation
+//                 double xyStdDev = 0.01 * Math.pow(closestTagDistance.in(Units.Meters), 2.0)
+//                     / estimatedRobotPose.targetsUsed.size();
+//                 double thetaStdDev = 0.01 * Math.pow(closestTagDistance.in(Units.Meters), 2.0)
+//                     / estimatedRobotPose.targetsUsed.size();
 
-                // Set result
-                var result = new AprilTagCameraResult(estimatedRobotPose,
-                    VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev),
-                    pipelineResult.getTimestampSeconds());
-                apriltagCameraResult.add(result);
-                m_atomicEstimatedRobotPose.set(apriltagCameraResult);
-            });
-        });
-    }
+//                 // Set result
+//                 var result = new AprilTagCameraResult(estimatedRobotPose,
+//                     VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev),
+//                     pipelineResult.getTimestampSeconds());
+//                 apriltagCameraResult.add(result);
+//                 m_atomicEstimatedRobotPose.set(apriltagCameraResult);
+//             });
+//         });
+//     }
 
-    /**
-     * Gets the latest robot pose. Calling this will only return the pose once. If it returns a
-     * non-null value, it is a new estimate that hasn't been returned before. This pose will always
-     * be for the BLUE alliance.
-     *
-     * @return Latest estimated pose
-     */
-    public List<AprilTagCameraResult> getLatestEstimatedPose() {
-        return m_atomicEstimatedRobotPose.getAndSet(null);
-    }
+//     /**
+//      * Gets the latest robot pose. Calling this will only return the pose once. If it returns a
+//      * non-null value, it is a new estimate that hasn't been returned before. This pose will always
+//      * be for the BLUE alliance.
+//      *
+//      * @return Latest estimated pose
+//      */
+//     public List<AprilTagCameraResult> getLatestEstimatedPose() {
+//         return m_atomicEstimatedRobotPose.getAndSet(null);
+//     }
 
-    /**
-     * Allows user to select the active pipeline index
-     *
-     * @param index The active pipeline index
-     */
-    public void setPipelineIndex(int index) {
-        m_camera.setPipelineIndex(index);
-    }
+//     /**
+//      * Allows user to select the active pipeline index
+//      *
+//      * @param index The active pipeline index
+//      */
+//     public void setPipelineIndex(int index) {
+//         m_camera.setPipelineIndex(index);
+//     }
 
-    /**
-     * Get camera to robot transform
-     *
-     * @return Camera to robot transform
-     */
-    public Transform3d getTransform() {
-        return m_transform;
-    }
+//     /**
+//      * Get camera to robot transform
+//      *
+//      * @return Camera to robot transform
+//      */
+//     public Transform3d getTransform() {
+//         return m_transform;
+//     }
 
-    @Override
-    public void close() {
-        m_camera.close();
-    }
-}
+//     @Override
+//     public void close() {
+//         m_camera.close();
+//     }
+// }
