@@ -13,7 +13,5 @@ on:
 jobs:
   code-checks:
     uses: Frc5572/Workflows/.github/workflows/frc-checks.yml@initial-setup
-  pages:
-    uses: Frc5572/Workflows/.github/workflows/pages.yml@initial-setup
-    if: success() && github.ref_name == github.event.repository.default_branch
-
+  # pages:
+  #   uses: Frc5572/Workflows/.github/workflows/pages.yml@initial-setup
