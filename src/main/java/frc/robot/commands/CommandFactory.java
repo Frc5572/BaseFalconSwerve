@@ -21,6 +21,13 @@ import frc.robot.subsystems.swerve.Swerve;
  */
 public class CommandFactory {
 
+    /**
+     * Rotate to gamepiece detected via Photon Vision
+     *
+     * @param swerve Swerve Subsystem
+     * @param objectYawSupplier Supplier of Yaw to which to rotate
+     * @return Command
+     */
     public static Command rotateToGamePiece(Swerve swerve,
         Supplier<Optional<Angle>> objectYawSupplier) {
         HolonomicDriveController holonomicDriveController =

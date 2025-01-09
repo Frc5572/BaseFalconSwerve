@@ -13,7 +13,7 @@ import edu.wpi.first.math.numbers.N3;
  * Singleton class to track Robot State
  */
 public class RobotState {
-    /*
+    /**
      * Odometry Observation
      */
     public record OdometryObservation(SwerveModulePosition[] wheelPositions, Rotation2d gyroAngle,
@@ -39,8 +39,9 @@ public class RobotState {
      * @return RobotState
      */
     public static RobotState getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new RobotState();
+        }
         return instance;
     }
 
