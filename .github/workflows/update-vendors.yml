@@ -13,3 +13,5 @@ on:
 jobs:
   vendor-updates:
     uses: Frc5572/Workflows/.github/workflows/update-dependencies.yml@iamge-permisions-again
+    with:
+      version: iamge-permisions-again
