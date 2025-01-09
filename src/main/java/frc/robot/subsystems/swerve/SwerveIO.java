@@ -19,6 +19,11 @@ public interface SwerveIO {
         public double newyaw;
         public double newroll;
         public double newpitch;
+
+        public double neoPosition;
+        public double neoVelocity;
+
+        public boolean camera1Connected;
     }
 
     public default void updateInputs(SwerveInputs inputs) {}
@@ -39,5 +44,7 @@ public interface SwerveIO {
     }
 
     public default void setPose(Pose2d pose) {}
+
+    public default void runNeo(double power) {}
 
 }

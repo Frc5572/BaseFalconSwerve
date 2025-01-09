@@ -1,14 +1,16 @@
 package frc.robot;
 
-import com.reduxrobotics.canand.CanandEventLoop;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot.RobotRunType;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveReal;
@@ -22,6 +24,9 @@ import frc.robot.subsystems.swerve.SwerveSim;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    AddressableLEDBufferView m_left = Robot.m_ledBuffer.createView(0, 59);
+    AddressableLEDBufferView m_right = Robot.m_ledBuffer.createView(60, 119).reversed();
+
 
     /* Shuffleboard */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -31,10 +36,14 @@ public class RobotContainer {
 
     /* Subsystems */
     private Swerve s_Swerve;
+    // private Vision s_Vision = new Vision();
+    private LEDs s_LEDs1 = new LEDs(m_left);
+    private LEDs s_LEDs2 = new LEDs(m_right);
 
     /**
      */
     public RobotContainer(RobotRunType runtimeType) {
+
         switch (runtimeType) {
             case kReal:
                 s_Swerve = new Swerve(new SwerveReal());
@@ -52,6 +61,8 @@ public class RobotContainer {
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver,
             Constants.Swerve.isFieldRelative, Constants.Swerve.isOpenLoop));
+        s_LEDs1.setDefaultCommand(s_LEDs1.runDefault(Color.kRed));
+        s_LEDs2.setDefaultCommand(s_LEDs2.runDefault2(Color.kBlue));
         // Configure the button bindings
         // CanandEventLoop.getInstance();
         configureButtonBindings();
@@ -68,6 +79,11 @@ public class RobotContainer {
 
         /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.resetFieldRelativeOffset()));
+
+        driver.x().whileTrue(s_Swerve.runNeo(1));
+
+        // driver.a()
+        // .whileTrue(CommandFactory.rotateToGamePiece(s_Swerve, s_Vision::getObjectHeading));
     }
 
     /**

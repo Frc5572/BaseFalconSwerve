@@ -14,6 +14,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -31,6 +33,9 @@ public class Robot extends LoggedRobot {
     private Command autoChooser;
 
     public static Profiler profiler;
+
+    AddressableLED m_led = new AddressableLED(9);
+    public static AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(120);
 
     /**
      * Robot Run type
@@ -73,8 +78,9 @@ public class Robot extends LoggedRobot {
                 Logger.recordMetadata("GitDirty", "Unknown");
                 break;
         }
-
-
+        m_led.setLength(m_ledBuffer.getLength());
+        m_led.setData(m_ledBuffer);
+        m_led.start();
 
         if (isReal()) {
             // Logger.addDataReceiver(new WPILOGWriter("/media/sda1")); // Log to a USB stick
@@ -131,6 +137,7 @@ public class Robot extends LoggedRobot {
         } else {
             hasStarted = true;
         }
+        m_led.setData(m_ledBuffer);
         // profiler.startTick();
         // profiler.push("robotPeriodic()");
         // profiler.push("draw_state_to_shuffleboard");

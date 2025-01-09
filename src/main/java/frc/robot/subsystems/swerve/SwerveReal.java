@@ -1,7 +1,15 @@
 package frc.robot.subsystems.swerve;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.util.swerve.SwerveModule;
 import frc.lib.util.swerve.SwerveModuleReal;
@@ -13,8 +21,15 @@ public class SwerveReal implements SwerveIO {
     private AHRS gyro = new AHRS(Constants.Swerve.navXID);
     private Canandgyro newGyro = new Canandgyro(1);
 
+    private SparkMax neo = new SparkMax(60, MotorType.kBrushless);
+    private RelativeEncoder neoEncoder = neo.getEncoder();
+
     /** Real Swerve Initializer */
-    public SwerveReal() {}
+    public SwerveReal() {
+        SparkBaseConfig neoConfig = new SparkMaxConfig().inverted(true).idleMode(IdleMode.kCoast);
+        neo.configure(neoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    }
 
     @Override
     public void updateInputs(SwerveInputs inputs) {
@@ -25,12 +40,16 @@ public class SwerveReal implements SwerveIO {
         inputs.newpitch = newGyro.getPitch();
         inputs.newroll = newGyro.getRoll();
 
+        inputs.neoPosition = neoEncoder.getPosition();
+        inputs.neoVelocity = neoEncoder.getVelocity();
+
+        // inputs.camera1Connected = camera1.isConnected();
     }
 
     public SwerveModule createSwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
         int cancoderID, Rotation2d angleOffset) {
         return new SwerveModule(moduleNumber, angleOffset,
-            new SwerveModuleReal(driveMotorID, angleMotorID, cancoderID));
+            new SwerveModuleReal(driveMotorID, angleMotorID, cancoderID, angleOffset));
     }
 
     @Override
@@ -48,6 +67,10 @@ public class SwerveReal implements SwerveIO {
             createSwerveModule(3, Constants.Swerve.Mod3.driveMotorID,
                 Constants.Swerve.Mod3.angleMotorID, Constants.Swerve.Mod3.canCoderID,
                 Constants.Swerve.Mod3.angleOffset)};
+    }
+
+    public void runNeo(double power) {
+        neo.set(power);
     }
 
 }

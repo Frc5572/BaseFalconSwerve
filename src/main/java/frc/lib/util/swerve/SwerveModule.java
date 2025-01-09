@@ -34,7 +34,6 @@ public class SwerveModule {
 
         // lastAngle = getState().angle.getDegrees();
         io.updateInputs(inputs);
-        resetToAbsolute();
         Logger.processInputs("SwerveModule" + moduleNumber, inputs);
     }
 
@@ -56,7 +55,7 @@ public class SwerveModule {
      * @param isOpenLoop Whether the state should be open or closed loop controlled
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+        desiredState.optimize(getState().angle);
         io.setAngleMotor(desiredState.angle.getRotations());
         setSpeed(desiredState, isOpenLoop);
         SmartDashboard.putNumber("desired state speed/" + moduleNumber,
@@ -119,8 +118,7 @@ public class SwerveModule {
         return new SwerveModuleState(
             Conversions.rotationPerSecondToMetersPerSecond(inputs.driveMotorSelectedSensorVelocity,
                 Constants.Swerve.wheelCircumference),
-            Rotation2d.fromRotations(
-                inputs.absolutePositionAngleEncoder - this.angleOffset.getRotations()));
+            Rotation2d.fromRotations(inputs.absolutePositionAngleEncoder));
     }
 
     /**

@@ -2,10 +2,9 @@ package frc.robot.subsystems.swerve;
 
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,17 +16,20 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.FieldConstants;
 import frc.lib.util.swerve.SwerveModule;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotState;
+import frc.robot.RobotState.OdometryObservation;
 
 /**
  * Swerve Subsystem
  */
 public class Swerve extends SubsystemBase {
-    public SwerveDrivePoseEstimator swerveOdometry;
     public SwerveModule[] swerveMods;
     private final Field2d field = new Field2d();
     private double fieldOffset;
@@ -50,14 +52,15 @@ public class Swerve extends SubsystemBase {
         swerveMods = swerveIO.createModules();
         fieldOffset = getGyroYaw().getDegrees();
 
-        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics,
-            getGyroYaw(), getModulePositions(), new Pose2d());
+        RobotState.getInstance().resetPoseEstimator(getGyroYaw(), getModulePositions(),
+            new Pose2d());
 
         swerveIO.updateInputs(inputs);
 
-        AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getChassisSpeeds,
-            this::setModuleStates, Constants.Swerve.pathFollowerConfig, () -> shouldFlipPath(),
-            this);
+        // AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry,
+        // this::getChassisSpeeds,
+        // this::setModuleStates, Constants.Swerve.pathFollowerConfig, () -> shouldFlipPath(),
+        // this);
 
         // Logging callback for target robot pose
         PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
@@ -83,10 +86,12 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
         boolean isOpenLoop) {
         Robot.profiler.push("swerve.drive()");
-        ChassisSpeeds chassisSpeeds = fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(),
-                rotation, getFieldRelativeHeading())
-            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        ChassisSpeeds chassisSpeeds =
+            new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        if (fieldRelative) {
+            chassisSpeeds =
+                ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getFieldRelativeHeading());
+        }
 
         setModuleStates(chassisSpeeds);
         Robot.profiler.pop();
@@ -111,9 +116,11 @@ public class Swerve extends SubsystemBase {
      * @param chassisSpeeds The desired Chassis Speeds
      */
     public void setModuleStates(ChassisSpeeds chassisSpeeds) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+        chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond,
+            LoggedRobot.defaultPeriodSecs);
         SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(swerveModuleStates);
     }
 
@@ -173,7 +180,7 @@ public class Swerve extends SubsystemBase {
      */
     @AutoLogOutput(key = "Odometry/Robot")
     public Pose2d getPose() {
-        return swerveOdometry.getEstimatedPosition();
+        return RobotState.getInstance().getPose2d();
     }
 
     /**
@@ -182,7 +189,7 @@ public class Swerve extends SubsystemBase {
      * @param pose Pose2d to set
      */
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        RobotState.getInstance().resetPoseEstimator(getGyroYaw(), getModulePositions(), pose);
         this.swerveIO.setPose(pose);
     }
 
@@ -235,15 +242,6 @@ public class Swerve extends SubsystemBase {
         fieldOffset = getGyroYaw().getDegrees() + 180;
     }
 
-    /**
-     * Reset all modules to their front facing position
-     */
-    public void resetModulesToAbsolute() {
-        for (SwerveModule mod : swerveMods) {
-            mod.resetToAbsolute();
-        }
-    }
-
     @Override
     public void periodic() {
         // Robot.profiler.push("swerve_periodic");
@@ -254,7 +252,10 @@ public class Swerve extends SubsystemBase {
             mod.periodic();
         }
         // Robot.profiler.swap("update_swerve_odometry");
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        RobotState.getInstance().addOdometryObservation(
+            new OdometryObservation(getModulePositions(), getGyroYaw(), fieldOffset));
+
+        // update(getGyroYaw(), getModulePositions());
         // Robot.profiler.swap("process_inputs");
         Logger.processInputs("Swerve", inputs);
         // Robot.profiler.swap("update_shuffleboard");
@@ -330,5 +331,9 @@ public class Swerve extends SubsystemBase {
                 FieldConstants.allianceFlip(FieldConstants.Speaker.centerSpeakerOpening).getX()
                     - getPose().getX());
         return distance;
+    }
+
+    public Command runNeo(double power) {
+        return Commands.runEnd(() -> swerveIO.runNeo(power), () -> swerveIO.runNeo(0), this);
     }
 }
