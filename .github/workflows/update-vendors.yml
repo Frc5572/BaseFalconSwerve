@@ -12,5 +12,5 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   vendor-updates:
-    uses: Frc5572/Workflows/.github/workflows/update-dependencies.yml@use-app-token
+    uses: Frc5572/Workflows/.github/workflows/update-dependencies.yml@main
     secrets: inherit
